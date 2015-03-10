@@ -25,6 +25,12 @@ double IR_value;
 boolean ramp_approaching;
 boolean ramp_centered;
 
+boolean side_a=true;
+boolean east;
+boolean north;
+
+int state;
+
 void setup() {
   // put your setup code here, to run once:
   
@@ -52,16 +58,68 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
- 
+  
+  //state transitions
+  switch (state) {
+  case 0:
+   if(side_a)
+   {
+     //statechange to state 1
+   }
+   else
+   {
+     //statechange to state 4
+   }    
+   break;
+  case 1:
+   //drive forward
+   //while RGB does not turn white
+   //if RGB ==brown go to turn left state
+   //if RGB==white move to ramp traversal state machine intial state 
+   break;
+  case 2:
+   //turn left
+   //wait while encoders reach certain number of ticks
+   //change to IR X scan state
+   break;
+  case 3:
+   while(sweep_ramp()==true);
+   //switch to state 1
+   break;
+  case 4:
+   //drive backwards 20cm
+   //wait for encoder to hit certain number of ticks
+   if(east)
+   {
+     //state change to turn left 90 state 5
+   }
+   else
+   {
+     //state change to right turn 90 state X
+   }
+   break;
+  case 5:
+  //turn left
+  //wait for number of ticks
+  if(north)
+  {
+    //go to state 6
+  }
+  if(!north)
+  east==false;
+  //go to state 7
+  }
+  break;
+  case 6:
+  //drive forward
+  //wait till rgb turns white
+  //state change to state X
 }
 
 
 ISR(TIMER1_COMPA_vect)
-{//timer1 interrupt 1Hz toggles pin 13 (LED)
-//generates pulse wave of frequency 1Hz/2 = 0.5kHz (takes two cycles for full wave- toggle high then toggle low)
-
-   
+{
+  //check IR pulse to kill the switch  
 }
   
 

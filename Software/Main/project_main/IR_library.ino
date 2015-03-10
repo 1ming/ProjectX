@@ -53,15 +53,17 @@ boolean sweep_ramp()
   }
   if(abs(pos_left-(180-pos_right))<=3)
   {
-    ramp_centered=true;
+    return true;
   }
   if(pos_left-(180-pos_right)<=-5)
   {
     //adjust right, adjust proportional to the angle difference
+    return false;
   }
   if((180-pos_right)-pos_left<=-5)
   {
     //adjust left, adjust proportional to the angle difference
+    return false;
   }
 }
 
