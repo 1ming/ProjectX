@@ -95,25 +95,51 @@ void loop() {
    }
    else
    {
-     //state change to right turn 90 state X
+     //state change to right turn 90 state 8
    }
    break;
   case 5:
   //turn left
   //wait for number of ticks
-  if(north)
+  if(east)
   {
     //go to state 6
   }
-  if(!north)
-  east==false;
+  if(!east)
   //go to state 7
   }
   break;
   case 6:
   //drive forward
   //wait till rgb turns white
-  //state change to state X
+  //state change to state 8
+  break;
+  case 7:
+  //drive forward 30cm
+  //wait for encoder ticks
+  if(east){
+  //go to state 5
+  }
+  if(!east)
+  {
+  //to state 8
+  }
+  break;
+  cast 8:
+  //turn right
+  //wait for encoder ticks
+  if(east&&bumps==0)
+  {
+    //go to state 7
+  }
+  if(bumps==2)
+  {
+    //go to state 3
+  }
+  else
+  {
+    //go to state state 6
+  }
 }
 
 
