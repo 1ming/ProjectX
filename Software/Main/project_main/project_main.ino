@@ -3,8 +3,8 @@
 #include <Servo.h> 
 
 //ultrasonic pin definitions
-#define trigger_pin 
-#define echo_pin 
+#define trigger_pin 45
+#define echo_pin 47
 
 //RGB pin definitions
 #define freq_pin //s0

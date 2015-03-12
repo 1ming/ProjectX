@@ -30,7 +30,7 @@ Distributed as-is; no warranty is given.
 ******************************************************************************/
 #include <Wire.h> // Must include Wire library for I2C
 #include <SFE_MMA8452Q.h> // Includes the SFE_MMA8452Q library
-
+//#include <Servo.h>
 // Begin using the library by creating an instance of the MMA8452Q
 //  class. We'll call it "accel". That's what we'll reference from
 //  here on out.
@@ -76,7 +76,7 @@ void loop()
   {
     // First, use accel.read() to read the new variables:
     accel.read();
-    
+    delay(100);
     // accel.read() will update two sets of variables. 
     // * int's x, y, and z will store the signed 12-bit values 
     //   read out of the accelerometer.
