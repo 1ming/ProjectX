@@ -16,10 +16,11 @@ double US_raw_read()
 
 double US_read_max()
 {
-  const unsigned nvals = 100;
+  const unsigned nvals = 10;
   double cur_val, max_val = 0;
   
   for (int i = 0; i < nvals; ++i){ 
+    delay(50); //reflects min cycle time of 50 ms
     cur_val = US_raw_read();
     if  (cur_val > max_val) max_val = cur_val;
   }
@@ -29,10 +30,11 @@ double US_read_max()
 
 double US_read_avg()
 {
-  const unsigned nvals = 100;
+  const unsigned nvals = 10;
   double avg = 0;
   
-  for (int i = 0; i < nvals; ++i){ 
+  for (int i = 0; i < nvals; ++i){
+   delay(50); //reflects min cycle time of 50 ms 
     avg += ( US_raw_read() / (double)nvals );
   }
   
