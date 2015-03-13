@@ -30,7 +30,7 @@ boolean sweep_IR()
 }
 
 
-boolean sweep_ramp()
+int sweep_ramp()
 {
   servo_ver.write(90);
   int pos;
@@ -51,20 +51,7 @@ boolean sweep_ramp()
       right_set=true;
     }     
   }
-  if(abs(pos_left-(180-pos_right))<=3)
-  {
-    return true;
-  }
-  if(pos_left-(180-pos_right)<=-5)
-  {
-    //adjust right, adjust proportional to the angle difference
-    return false;
-  }
-  if((180-pos_right)-pos_left<=-5)
-  {
-    //adjust left, adjust proportional to the angle difference
-    return false;
-  }
+  return pos_left-(180-pos_right);
 }
 
 
