@@ -61,13 +61,11 @@
 #define WEST 3
 #define DIR_NUM
 
-<<<<<<< HEAD
+
 //global
 MMA8452Q accel;    //accelerometer object
-Servo ir_hor, ir_ver, us_hor, esc;
-=======
 Servo ir_hor, ir_ver, us_hor, esc, guide;
->>>>>>> origin/master
+
 
 boolean white_approaching = false;
 
@@ -131,13 +129,7 @@ void setup() {
     
   //attach and center servos    
   ir_hor.attach(IR_HOR_PIN);
-<<<<<<< HEAD
-  ir_hor.write(IR_HOR_MID + 15);
-//  ir_ver.attach(IR_VER_PIN);
-//  ir_ver.write(IR_VER_MID);
-//  us_hor.attach(US_HOR_PIN);
-//  us_hor.write(US_HOR_MID;
-=======
+
   ir_hor.write(IR_HOR_MID);
   ir_ver.attach(IR_VER_PIN);
   ir_ver.write(IR_VER_MID);
@@ -171,7 +163,6 @@ void setup() {
 // analogWrite(RT_REV, 255);
 // analogWrite(LT_REV, 255); 
   
->>>>>>> origin/master
 }
 
 enum dirs{
@@ -186,29 +177,7 @@ void loop()
 {
   //sensor test code for Mega 2560
   
-<<<<<<< HEAD
-  //Serial.println("IR sweep ramp result");
-  //Serial.println( IR_sweep_ramp() );
 
-  //test_US_avg_max();
-  //print_accel_vals();
-  boolean side_a=true;
-  unsigned int dir = 1;
-  unsigned int prev_dir = 1;
-  
-  servo_serial_test(ir_hor);
-  //while(1);
-  
-  
-  //state transitions
-   find_ramp(&side_a, &dir, &prev_dir);
-   //traverse_ramp
-   //find_base
-   //pick_up_legoman
-   //find_ramp
-   //traverse_ramp
-   //find_base
-=======
 //   test_US_avg_max();   
 //   print_accel_vals();
    
@@ -285,7 +254,7 @@ void loop()
         analogWrite(LT_FWD, 255);
     }
   }
->>>>>>> origin/master
+
 }
   
   
@@ -298,10 +267,8 @@ ISR(TIMER2_COMPA_vect)
   if (n_calls == 0){
     //Serial.println( IR_read() );
     //Serial.println( US_raw_read() );
-<<<<<<< HEAD
-=======
+
     //Serial.flush();
->>>>>>> origin/master
     //rgb_print_color_durations(); 
   }
   
