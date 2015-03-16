@@ -37,29 +37,23 @@
 #define US_HOR_MID 90
 #define US_HOR_MAX 165
 
-MMA8452Q accel;    //accelerometer object
-boolean white_approaching = false;
+#define NORTH 0
+#define EAST 1
+#define SOUTH 2
+#define WEST 3
+#define DIR_NUM
 
+//global
+MMA8452Q accel;    //accelerometer object
 Servo ir_hor, ir_ver, us_hor, esc;
 
-int pos_hor=0;
-int pos_ver=0;
-
-
-boolean ramp_approaching;
-boolean ramp_centered;
-
-boolean side_a=true;
-boolean east;
-boolean north;
-
-unsigned char state = 0;
-unsigned char bumps = 0;
+boolean white_approaching = false;
 
 void setup() {
   // put your setup code here, to run once:
       
   Serial.begin(9600);
+
 
   //Colour sensor
   pinMode(freq_pin,OUTPUT);
@@ -69,6 +63,8 @@ void setup() {
   pinMode(LED_pin, OUTPUT);
   digitalWrite(LED_pin, LOW);
   
+ 
+  
   pinMode(out,INPUT);  
   pinMode(oe_bar, OUTPUT);
   digitalWrite(oe_bar, LOW); //keep RGB output enabled
@@ -77,8 +73,11 @@ void setup() {
   pinMode(trigger_pin, OUTPUT);
   pinMode(echo_pin, INPUT);
   
-  accel.init();
+ 
+ // accel.init();
   delay(1000);
+  
+  Serial.println("Got here.");
   
   //timer interrupt setup
   
@@ -94,7 +93,7 @@ void setup() {
   //attach and center servos
     
   ir_hor.attach(IR_HOR_PIN);
-  ir_hor.write(IR_HOR_MID);
+  ir_hor.write(IR_HOR_MID + 15);
 //  ir_ver.attach(IR_VER_PIN);
 //  ir_ver.write(IR_VER_MID);
 //  us_hor.attach(US_HOR_PIN);
@@ -109,94 +108,22 @@ void loop() {
 
   //test_US_avg_max();
   //print_accel_vals();
-
+  boolean side_a=true;
+  unsigned int dir = 1;
+  unsigned int prev_dir = 1;
   
-  //servo_serial_test(ir_hor);
+  servo_serial_test(ir_hor);
   //while(1);
   
   
   //state transitions
-  switch (state) {
-  case 0:
-   if(side_a)
-   {
-     //statechange to state 1
-   }
-   else
-   {
-     //statechange to state 4
-   }    
-   break;
-  case 1:
-   //drive forward
-   //while RGB does not turn white
-   //if RGB ==brown go to turn left state
-   //if RGB==white move to ramp traversal state machine intial state 
-   break;
-  case 2:
-   //turn left
-   //wait while encoders reach certain number of ticks
-   //change to IR X scan state
-   break;
-  case 3:
-   while( IR_sweep_ramp() == true );
-   //switch to state 1
-   break;
-  case 4:
-   //drive backwards 20cm
-   //wait for encoder to hit certain number of ticks
-   if(east)
-   {
-     //state change to turn left 90 state 5
-   }
-   else
-   {
-     //state change to right turn 90 state 8
-   }
-   break;
-  case 5:
-  //turn left
-  //wait for number of ticks
-  if(east)
-  {
-    //go to state 6
-  }
-  if(!east){
-  //go to state 7
-  }
-  break;
-  case 6:
-  //drive forward
-  //wait till rgb turns white
-  //state change to state 8
-  break;
-  case 7:
-  //drive forward 30cm
-  //wait for encoder ticks
-  if(east){
-  //go to state 5
-  }
-  if(!east)
-  {
-  //to state 8
-  }
-  break;
-  case 8:
-  //turn right
-  //wait for encoder ticks
-  if(east&&bumps==0)
-  {
-    //go to state 7
-  }
-  if(bumps==2)
-  {
-    //go to state 3
-  }
-  else
-  {
-    //go to state state 6
-  }
-  }
+   find_ramp(&side_a, &dir, &prev_dir);
+   //traverse_ramp
+   //find_base
+   //pick_up_legoman
+   //find_ramp
+   //traverse_ramp
+   //find_base
 }
 
 
@@ -208,13 +135,8 @@ ISR(TIMER2_COMPA_vect)
   if (n_calls == 0){
     //Serial.println( IR_read() );
     //Serial.println( US_raw_read() );
-    rgb_print_color_durations(); 
+    //rgb_print_color_durations(); 
   }
   
   ++n_calls %= 1000;
 }
-  
-
-
-
-

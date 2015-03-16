@@ -5,34 +5,33 @@ double pos_right;
 boolean left_set=false;
 boolean right_set=false;
 
-double read_IRSensor()
+double IR_read()
 {
-  int sensorValue = analogRead(A0); 
-  double voltage = sensorValue * (5.0 / 1023.0);
+   return analogRead(IR_pin) * (5.0 / 1023.0); 
 }
 
-boolean sweep_IR()
+boolean IR_sweep()
 {
-  servo_hor.write(90);
+  ir_hor.write(IR_HOR_MID);
   int pos;
-   for(pos = 90; pos <= 180; pos += 1)  
+   for(pos = IR_VER_MIN; pos <= IR_VER_MAX; ++pos)  
   {
-    double IR_temp;    
-    servo_ver.write(pos);              
+    double tmp;    
+    ir_ver.write(pos);               
     delay(15);
-    IR_temp=read_IRSensor();
-    if(IR_temp-IR_value>0.1)
+    tmp=read_IRSensor();
+    if(tmp-IR_value>0.5)
     {
       ramp_approaching=true;
     }
-    IR_value=IR_temp;    
+    IR_value=temp;    
   }  
 }
 
 
-int sweep_ramp()
+int IR_sweep_ramp()
 {
-  servo_ver.write(90);
+  ir_ver.write(IR_VER_MID);
   int pos;
    for(pos = 0; pos <= 180; pos += 1)  
   {
@@ -40,15 +39,16 @@ int sweep_ramp()
     servo_hor.write(pos);              
     delay(15);
     IR_temp=read_IRSensor();
-    if(IR_temp>0.25&&!left_set)
+    if( (tmp > 0.25) && !left_set)
     {
-      pos_left=pos;
-      left_set=true;
+      pos_left = pos;
+      left_set = true;
     }
-    if(IR_temp<0.25&&!right_set&&left_set)
+    
+    if( (tmp < 0.25) && !right_set && left_set )
     {
-      pos_right=pos;
-      right_set=true;
+      pos_right = pos;
+      right_set = true;
     }     
   }
   return pos_left-(180-pos_right);

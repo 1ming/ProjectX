@@ -102,126 +102,15 @@ void setup() {
 
 }
 
-void loop() {
-  //sensor test code for Mega 2560
+void loop() 
+{
   
-  //Serial.println("IR sweep ramp result");
-  //Serial.println( IR_sweep_ramp() );
-
-  //test_US_avg_max();
-  //print_accel_vals();
-
-  
-  //servo_serial_test(ir_hor);
-  //while(1);
-  
-  
-  //state transitions
-  switch (state) {
-  case 0:
-   if(side_a)
-   {
-     //statechange to state 1
-   }
-   else
-   {
-     //statechange to state 4
-   }    
-   break;
-  case 1:
-   //drive forward
-   //while RGB does not turn white
-   //if RGB ==brown go to turn left state
-   //if RGB==white move to ramp traversal state machine intial state 
-   break;
-  case 2:
-   //turn left
-   //wait while encoders reach certain number of ticks
-   //change to IR X scan state
-   break;
-  case 3:
-   int val=IR_sweep_Ramp();
-   if(abs(val)<=3)
-  {
-    //go to ramp traversal
-  }
-  if(val>=5)
-  {
-    //go to state 4
-  }
-  if(val<=-5)
-  {
-    //go to state 5
-  }
-   break;
-  case 4:
-    //adjust right
-    //go to state 3
-  break;
-  case 5:
-  //adjust left
-  //go to state 3
-  break;
-  case 6:
-   //drive backwards 20cm
-   //wait for encoder to hit certain number of ticks
-   if(east)
-   {
-     //state change to turn left 90 state 7
-   }
-   else
-   {
-     //state change to right turn 90 state 10
-   }
-   break;
-  case 7:
-  //turn left
-  //wait for number of ticks
-  if(east)
-  {
-    //go to state 8
-  }
-  if(!east){
-  //go to state 9
-  }
-  break;
-  case 8:
-  //drive forward
-  //wait till rgb turns white
-  //state change to state 10
-  break;
-  case 9:
-  //drive forward 30cm
-  //wait for encoder ticks
-  if(east){
-  //go to state 9
-  }
-  if(!east)
-  {
-  //to state 10
-  }
-  break;
-  case 10:
-  //turn right
-  //wait for encoder ticks
-  if(east&&bumps==0)
-  {
-    //go to state 9
-  }
-  if(bumps==2)
-  {
-    //go to state 3
-  }
-  else
-  {
-    //go to state state 8
-  }
-  }
+  servo_serial_test(ir_hor);
+  // ramp_find();
+   
 }
 
-ISR(TIMER1_COMPA_vect)
-{
-  ISR(TIMER2_COMPA_vect)
+ISR(TIMER2_COMPA_vect)
 {
   //check IR pulse to kill the switch
 
@@ -233,7 +122,6 @@ ISR(TIMER1_COMPA_vect)
   }
 
   ++n_calls %= 1000;
-}
 }
   
 

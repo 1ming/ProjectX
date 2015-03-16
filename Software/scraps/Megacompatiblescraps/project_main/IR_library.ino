@@ -12,7 +12,7 @@ double IR_read()
    return analogRead(IR_pin) * (5.0 / 1023.0); 
 }
 
-boolean IR_sweep()//Servo s_vert, Servo s_hor)
+boolean IR_ramp_incoming()//Servo s_vert, Servo s_hor)
 {
   double IR_value;
   int pos;
@@ -23,39 +23,28 @@ boolean IR_sweep()//Servo s_vert, Servo s_hor)
   {
     double tmp;    
     ir_ver.write(pos);              
-    delay(15);
-    
+    delay(15); 
     tmp = IR_read();
     if( (tmp - IR_value) > 0.5 )
     {
-      ramp_approaching=true;
+      
     }
     IR_value = tmp;    
   }  
-  
   return true;
 }
 
 
 int IR_sweep_ramp()
 {
-  // returns number of steps difference b/w left and right
-  // +ve means ramp is to the right of the robot
-  // -ve means ramp is to the left
-  // assumes center of robot is somehwhere in front of the ramp
-  
-  int pos;
-  double tmp;
-  
   ir_ver.write(IR_VER_MID);
-  
-  for(pos = IR_HOR_MIN; pos <= IR_HOR_MAX; pos += 1)  
+  int pos;
+   for(pos = IR_HOR_MIN; pos <= IR_HOR_MAX; ++pos)  
   {
-
+    double tmp;
     ir_hor.write(pos);              
     delay(15);
-    tmp = IR_read();
-    
+    tmp=IR_read();
     if( (tmp > 0.25) && !left_set)
     {
       pos_left = pos;
@@ -68,25 +57,7 @@ int IR_sweep_ramp()
       right_set = true;
     }     
   }
-  
-  if( abs(pos_left - (180 - pos_right))<=3 ) 
-  {
-    return true;
-  }
-  
-  return (pos_right - 90 - (90 -  pos_left) ); 
-  
-//  if( pos_left - (180 - pos_right) <= -5 )
-//  {
-//    //adjust right, adjust proportional to the angle difference
-//    return false;
-//  }
-//  
-//  if( (180 - pos_right) - pos_left <= -5 )
-//  {
-//    //adjust left, adjust proportional to the angle difference
-//    return false;
-//  }
+  return pos_left-(180-pos_right);
 }
 
 
