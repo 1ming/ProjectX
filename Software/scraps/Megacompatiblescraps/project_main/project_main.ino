@@ -16,31 +16,49 @@
 #define LED_pin        28 //Turn on LEDs
 
 //Servos
-
 #define IR_HOR_PIN   11 //IR horizontal pan PWM 
 #define IR_VER_PIN   12 //IR vertical tilt PWM 
 #define US_HOR_PIN   13 //Ultrasonic horizontal pan PWM 
 #define ESC_PIN      10 //ESC (brushless controller) PWM 
-
+#define GUIDE_PIN     9 //Ramp guide servo
 
 // limits for sg90's to operate safely (no grinding)
 //TODO: FIND ACTUAL CALIBRATIONS
-#define IR_HOR_MIN 15
-#define IR_HOR_MID 90
-#define IR_HOR_MAX 165
+#define IR_HOR_MIN 0
+#define IR_HOR_MID 85
+#define IR_HOR_MAX 180
 
-#define IR_VER_MIN 15
-#define IR_VER_MID 90
+#define IR_VER_MIN 0
+#define IR_VER_MID 70
 #define IR_VER_MAX 165
 
-#define US_HOR_MIN 15
-#define US_HOR_MID 90
-#define US_HOR_MAX 165
+#define US_HOR_MIN 0
+#define US_HOR_MID 80
+#define US_HOR_MAX 175
+
+#define GUIDE_UP   115
+#define GUIDE_DOWN 60
+
+//Motor PWM
+#define RT_FWD 5
+#define RT_REV 4
+#define LT_FWD 7
+#define LT_REV 6
+
+////Encoders
+//#define RT_A 2
+//#define RT_B 3
+//#define LT_A 18
+//#define LT_B 19
+
+//ESCs
+#define ESC_MIN     30   // Min firing angle that the ESC will respond to
+#define ESC_MAX     180  // Max firing angle for ESC
 
 MMA8452Q accel;    //accelerometer object
 boolean white_approaching = false;
 
-Servo ir_hor, ir_ver, us_hor, esc;
+Servo ir_hor, ir_ver, us_hor, esc, guide;
 
 int pos_hor=0;
 int pos_ver=0;
@@ -56,10 +74,27 @@ boolean north;
 unsigned char state = 0;
 unsigned char bumps = 0;
 
+//ISR for kill switch
+void killed()
+{
+    analogWrite(RT_FWD, 0);
+    analogWrite(LT_FWD, 0);
+    analogWrite(RT_REV, 0);
+    analogWrite(LT_REV, 0);
+    
+    esc.write(0);
+    
+    while(1);
+  
+  //Serial.println("killed.");
+}
+
 void setup() {
   // put your setup code here, to run once:
       
   Serial.begin(9600);
+  //Kill switch interrupt
+  attachInterrupt(1, killed, FALLING);
 
   //Colour sensor
   pinMode(freq_pin,OUTPUT);
@@ -79,6 +114,7 @@ void setup() {
   
   accel.init();
   delay(1000);
+  rgb_setup();
   
   //timer interrupt setup
   
@@ -89,116 +125,135 @@ void setup() {
   TCCR2B |= (1 << WGM12);
   TCCR2B |= (1 << CS12) | (1 << CS10);  
   TIMSK2 |= (1 << OCIE1A);
-  
-  
-  //attach and center servos
     
+  //attach and center servos    
   ir_hor.attach(IR_HOR_PIN);
   ir_hor.write(IR_HOR_MID);
-//  ir_ver.attach(IR_VER_PIN);
-//  ir_ver.write(IR_VER_MID);
-//  us_hor.attach(US_HOR_PIN);
-//  us_hor.write(US_HOR_MID;
+  ir_ver.attach(IR_VER_PIN);
+  ir_ver.write(IR_VER_MID);
+  us_hor.attach(US_HOR_PIN);
+  us_hor.write(US_HOR_MID);
+//    guide.attach(GUIDE_PIN);
+//    guide.write(GUIDE_UP);
+  esc.attach(ESC_PIN);
+  //esc_arm();
+  
+ //Ensure no motor PWM at startup
+ analogWrite(RT_FWD, 0);
+ analogWrite(RT_REV, 0);
+ analogWrite(LT_FWD, 0);
+ analogWrite(LT_REV, 0);
+ 
+ delay(1000);
+ analogWrite(RT_REV, 75);
+ analogWrite(LT_REV, 75);
+ delay(500);
+ 
+ 
+// analogWrite(RT_REV, 150);
+// analogWrite(LT_REV, 150);
+// delay(500);
+// 
+// analogWrite(RT_REV, 225);
+// analogWrite(LT_REV, 225);
+// delay(50);
+// 
+// analogWrite(RT_REV, 255);
+// analogWrite(LT_REV, 255); 
+  
 }
 
-void loop() {
+enum dirs{
+  NORTH,
+  EAST,
+  SOUTH,
+  WEST
+};
+  
+
+void loop() 
+{
   //sensor test code for Mega 2560
   
-  //Serial.println("IR sweep ramp result");
-  //Serial.println( IR_sweep_ramp() );
+//   test_US_avg_max();   
+//   print_accel_vals();
+   
+//  Serial.print("IR val: ");
+//  Serial.println( IR_read() );  
+//  while( !Serial.available() );
+//  Serial.read();
+//  rgb_print_color_durations();
 
-  //test_US_avg_max();
-  //print_accel_vals();
+//  servo_serial_test(ir_hor);
+//  servo_serial_test(ir_ver);
+//  servo_serial_test(us_hor);
 
+  while(1){
+//    Serial.println("forward.");
+//    
+//    analogWrite(RT_FWD, 255);
+//    analogWrite(LT_FWD, 255);
+//    delay(3000);
+// 
+//    analogWrite(RT_FWD, 75);
+//    analogWrite(LT_FWD, 75);
+//    delay(100);
+////
+//    analogWrite(RT_FWD, 0);
+//    analogWrite(LT_FWD, 0);
+//    delay(1000);
+    
+//    Serial.println("Reverse");
+//    analogWrite(RT_REV, 127);
+//    analogWrite(LT_REV, 127);
+//    delay(2000);
+//    
+//    analogWrite(RT_REV, 0);
+//    analogWrite(LT_REV, 0);
+//    delay(1000);
+  }
   
-  //servo_serial_test(ir_hor);
-  //while(1);
   
   
-  //state transitions
-  switch (state) {
-  case 0:
-   if(side_a)
-   {
-     //statechange to state 1
-   }
-   else
-   {
-     //statechange to state 4
-   }    
-   break;
-  case 1:
-   //drive forward
-   //while RGB does not turn white
-   //if RGB ==brown go to turn left state
-   //if RGB==white move to ramp traversal state machine intial state 
-   break;
-  case 2:
-   //turn left
-   //wait while encoders reach certain number of ticks
-   //change to IR X scan state
-   break;
-  case 3:
-   while( IR_sweep_ramp() == true );
-   //switch to state 1
-   break;
-  case 4:
-   //drive backwards 20cm
-   //wait for encoder to hit certain number of ticks
-   if(east)
-   {
-     //state change to turn left 90 state 5
-   }
-   else
-   {
-     //state change to right turn 90 state 8
-   }
-   break;
-  case 5:
-  //turn left
-  //wait for number of ticks
-  if(east)
+  while(1);
+  
+  //Test motor
+  analogWrite(RT_FWD, 255);
+  analogWrite(LT_FWD, 255);
+  double  dist_set = US_read_avg();
+  double cur_dist = dist_set;
+  double dist_thresh = 10;
+  int dir = EAST;
+  double diff = 0;
+  int k = 10;
+  
+  us_hor.write(US_HOR_MIN); //fully left for west movement
+  
+  while(1)
   {
-    //go to state 6
-  }
-  if(!east){
-  //go to state 7
-  }
-  break;
-  case 6:
-  //drive forward
-  //wait till rgb turns white
-  //state change to state 8
-  break;
-  case 7:
-  //drive forward 30cm
-  //wait for encoder ticks
-  if(east){
-  //go to state 5
-  }
-  if(!east)
-  {
-  //to state 8
-  }
-  break;
-  case 8:
-  //turn right
-  //wait for encoder ticks
-  if(east&&bumps==0)
-  {
-    //go to state 7
-  }
-  if(bumps==2)
-  {
-    //go to state 3
-  }
-  else
-  {
-    //go to state state 6
-  }
+    diff = cur_dist - dist_set;
+    if( abs(diff) > dist_thresh )
+    {  
+      if(dir == EAST && diff > 0)
+      {
+        analogWrite(LT_FWD, 255 - (int)(k * diff));
+        analogWrite(RT_FWD, 255);
+      }
+      if(dir == EAST && diff < 0)
+      {
+        analogWrite(RT_FWD, 255 - (int)(k * diff));
+        analogWrite(LT_FWD, 255);
+      }
+    }
+    else
+    {
+        analogWrite(RT_FWD, 255);
+        analogWrite(LT_FWD, 255);
+    }
   }
 }
-
+  
+  
 
 ISR(TIMER2_COMPA_vect)
 {
@@ -208,7 +263,8 @@ ISR(TIMER2_COMPA_vect)
   if (n_calls == 0){
     //Serial.println( IR_read() );
     //Serial.println( US_raw_read() );
-    rgb_print_color_durations(); 
+    //Serial.flush();
+    //rgb_print_color_durations(); 
   }
   
   ++n_calls %= 1000;
