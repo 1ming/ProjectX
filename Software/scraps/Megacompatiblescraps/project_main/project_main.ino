@@ -16,26 +16,44 @@
 #define LED_pin        28 //Turn on LEDs
 
 //Servos
-
 #define IR_HOR_PIN   11 //IR horizontal pan PWM 
 #define IR_VER_PIN   12 //IR vertical tilt PWM 
 #define US_HOR_PIN   13 //Ultrasonic horizontal pan PWM 
 #define ESC_PIN      10 //ESC (brushless controller) PWM 
-
+#define GUIDE_PIN     9 //Ramp guide servo
 
 // limits for sg90's to operate safely (no grinding)
 //TODO: FIND ACTUAL CALIBRATIONS
-#define IR_HOR_MIN 15
-#define IR_HOR_MID 90
-#define IR_HOR_MAX 165
+#define IR_HOR_MIN 0
+#define IR_HOR_MID 85
+#define IR_HOR_MAX 180
 
-#define IR_VER_MIN 15
-#define IR_VER_MID 90
+#define IR_VER_MIN 0
+#define IR_VER_MID 70
 #define IR_VER_MAX 165
 
-#define US_HOR_MIN 15
-#define US_HOR_MID 90
-#define US_HOR_MAX 165
+#define US_HOR_MIN 0
+#define US_HOR_MID 80
+#define US_HOR_MAX 175
+
+#define GUIDE_UP   115
+#define GUIDE_DOWN 60
+
+//Motor PWM
+#define RT_FWD 5
+#define RT_REV 4
+#define LT_FWD 7
+#define LT_REV 6
+
+////Encoders
+//#define RT_A 2
+//#define RT_B 3
+//#define LT_A 18
+//#define LT_B 19
+
+//ESCs
+#define ESC_MIN     30   // Min firing angle that the ESC will respond to
+#define ESC_MAX     180  // Max firing angle for ESC
 
 #define NORTH 0
 #define EAST 1
@@ -43,16 +61,37 @@
 #define WEST 3
 #define DIR_NUM
 
+<<<<<<< HEAD
 //global
 MMA8452Q accel;    //accelerometer object
 Servo ir_hor, ir_ver, us_hor, esc;
+=======
+Servo ir_hor, ir_ver, us_hor, esc, guide;
+>>>>>>> origin/master
 
 boolean white_approaching = false;
+
+//ISR for kill switch
+void killed()
+{
+    analogWrite(RT_FWD, 0);
+    analogWrite(LT_FWD, 0);
+    analogWrite(RT_REV, 0);
+    analogWrite(LT_REV, 0);
+    
+    esc.write(0);
+    
+    while(1);
+  
+  //Serial.println("killed.");
+}
 
 void setup() {
   // put your setup code here, to run once:
       
   Serial.begin(9600);
+  //Kill switch interrupt
+  attachInterrupt(1, killed, FALLING);
 
 
   //Colour sensor
@@ -76,6 +115,7 @@ void setup() {
  
  // accel.init();
   delay(1000);
+  rgb_setup();
   
   Serial.println("Got here.");
   
@@ -88,21 +128,65 @@ void setup() {
   TCCR2B |= (1 << WGM12);
   TCCR2B |= (1 << CS12) | (1 << CS10);  
   TIMSK2 |= (1 << OCIE1A);
-  
-  
-  //attach and center servos
     
+  //attach and center servos    
   ir_hor.attach(IR_HOR_PIN);
+<<<<<<< HEAD
   ir_hor.write(IR_HOR_MID + 15);
 //  ir_ver.attach(IR_VER_PIN);
 //  ir_ver.write(IR_VER_MID);
 //  us_hor.attach(US_HOR_PIN);
 //  us_hor.write(US_HOR_MID;
+=======
+  ir_hor.write(IR_HOR_MID);
+  ir_ver.attach(IR_VER_PIN);
+  ir_ver.write(IR_VER_MID);
+  us_hor.attach(US_HOR_PIN);
+  us_hor.write(US_HOR_MID);
+//    guide.attach(GUIDE_PIN);
+//    guide.write(GUIDE_UP);
+  esc.attach(ESC_PIN);
+  //esc_arm();
+  
+ //Ensure no motor PWM at startup
+ analogWrite(RT_FWD, 0);
+ analogWrite(RT_REV, 0);
+ analogWrite(LT_FWD, 0);
+ analogWrite(LT_REV, 0);
+ 
+ delay(1000);
+ analogWrite(RT_REV, 75);
+ analogWrite(LT_REV, 75);
+ delay(500);
+ 
+ 
+// analogWrite(RT_REV, 150);
+// analogWrite(LT_REV, 150);
+// delay(500);
+// 
+// analogWrite(RT_REV, 225);
+// analogWrite(LT_REV, 225);
+// delay(50);
+// 
+// analogWrite(RT_REV, 255);
+// analogWrite(LT_REV, 255); 
+  
+>>>>>>> origin/master
 }
 
-void loop() {
+enum dirs{
+  NORTH,
+  EAST,
+  SOUTH,
+  WEST
+};
+  
+
+void loop() 
+{
   //sensor test code for Mega 2560
   
+<<<<<<< HEAD
   //Serial.println("IR sweep ramp result");
   //Serial.println( IR_sweep_ramp() );
 
@@ -124,8 +208,87 @@ void loop() {
    //find_ramp
    //traverse_ramp
    //find_base
-}
+=======
+//   test_US_avg_max();   
+//   print_accel_vals();
+   
+//  Serial.print("IR val: ");
+//  Serial.println( IR_read() );  
+//  while( !Serial.available() );
+//  Serial.read();
+//  rgb_print_color_durations();
 
+//  servo_serial_test(ir_hor);
+//  servo_serial_test(ir_ver);
+//  servo_serial_test(us_hor);
+
+  while(1){
+//    Serial.println("forward.");
+//    
+//    analogWrite(RT_FWD, 255);
+//    analogWrite(LT_FWD, 255);
+//    delay(3000);
+// 
+//    analogWrite(RT_FWD, 75);
+//    analogWrite(LT_FWD, 75);
+//    delay(100);
+////
+//    analogWrite(RT_FWD, 0);
+//    analogWrite(LT_FWD, 0);
+//    delay(1000);
+    
+//    Serial.println("Reverse");
+//    analogWrite(RT_REV, 127);
+//    analogWrite(LT_REV, 127);
+//    delay(2000);
+//    
+//    analogWrite(RT_REV, 0);
+//    analogWrite(LT_REV, 0);
+//    delay(1000);
+  }
+  
+  
+  
+  while(1);
+  
+  //Test motor
+  analogWrite(RT_FWD, 255);
+  analogWrite(LT_FWD, 255);
+  double  dist_set = US_read_avg();
+  double cur_dist = dist_set;
+  double dist_thresh = 10;
+  int dir = EAST;
+  double diff = 0;
+  int k = 10;
+  
+  us_hor.write(US_HOR_MIN); //fully left for west movement
+  
+  while(1)
+  {
+    diff = cur_dist - dist_set;
+    if( abs(diff) > dist_thresh )
+    {  
+      if(dir == EAST && diff > 0)
+      {
+        analogWrite(LT_FWD, 255 - (int)(k * diff));
+        analogWrite(RT_FWD, 255);
+      }
+      if(dir == EAST && diff < 0)
+      {
+        analogWrite(RT_FWD, 255 - (int)(k * diff));
+        analogWrite(LT_FWD, 255);
+      }
+    }
+    else
+    {
+        analogWrite(RT_FWD, 255);
+        analogWrite(LT_FWD, 255);
+    }
+  }
+>>>>>>> origin/master
+}
+  
+  
 
 ISR(TIMER2_COMPA_vect)
 {
@@ -135,6 +298,10 @@ ISR(TIMER2_COMPA_vect)
   if (n_calls == 0){
     //Serial.println( IR_read() );
     //Serial.println( US_raw_read() );
+<<<<<<< HEAD
+=======
+    //Serial.flush();
+>>>>>>> origin/master
     //rgb_print_color_durations(); 
   }
   
