@@ -2,15 +2,20 @@ long rgb_get_pulse()
 {
   long duration;
   digitalWrite(LED_pin, HIGH);
-  duration=pulseIn(out,HIGH);
+  duration = pulseIn(out, HIGH);
   digitalWrite(LED_pin, LOW);
   return duration;
 }
 
+void rgb_setup()
+{
+  digitalWrite(freq_pin, LOW);
+  digitalWrite(freq_highpin, HIGH);
+}
+
 long read_green()
 {
-  digitalWrite(freq_pin,HIGH);
-  digitalWrite(freq_highpin,HIGH);
+
   digitalWrite(color_red,HIGH);
   digitalWrite(color_blue,HIGH);
   
@@ -19,20 +24,16 @@ long read_green()
 
 long read_blue()
 {
-  digitalWrite(freq_pin,HIGH);
-  digitalWrite(freq_highpin,HIGH);
-  digitalWrite(color_red,HIGH);
-  digitalWrite(color_blue,LOW);
+  digitalWrite(color_red, HIGH);
+  digitalWrite(color_blue, LOW);
   
   return rgb_get_pulse();
 }
 
 long read_red()
 {
-  digitalWrite(freq_pin,HIGH);
-  digitalWrite(freq_highpin,HIGH);
-  digitalWrite(color_red,LOW);
-  digitalWrite(color_blue,LOW); 
+  digitalWrite(color_red, LOW);
+  digitalWrite(color_blue, LOW); 
   
   return rgb_get_pulse();
 }
