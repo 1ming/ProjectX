@@ -1,5 +1,8 @@
 void find_base(boolean *side_a, unsigned int *dir, unsigned int *prev_dir)
 {
+  int ultrasonic_val;
+  int ultrasonic_tmp;
+  unsigned int state =0;
     switch (state) {
     case 0:
       if(side_a)

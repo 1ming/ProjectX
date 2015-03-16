@@ -55,12 +55,6 @@
 #define ESC_MIN     30   // Min firing angle that the ESC will respond to
 #define ESC_MAX     180  // Max firing angle for ESC
 
-#define NORTH 0
-#define EAST 1
-#define SOUTH 2
-#define WEST 3
-#define DIR_NUM
-
 
 //global
 MMA8452Q accel;    //accelerometer object
