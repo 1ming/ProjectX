@@ -24,9 +24,9 @@
 
 // limits for sg90's to operate safely (no grinding)
 //TODO: FIND ACTUAL CALIBRATIONS
-#define IR_HOR_MIN 0
-#define IR_HOR_MID 85
-#define IR_HOR_MAX 180
+#define IR_HOR_RIGHT 0
+#define IR_HOR_MID   85
+#define IR_HOR_LEFT  175
 
 #define IR_VER_MIN 0
 #define IR_VER_MID 70
@@ -129,7 +129,7 @@ void setup() {
 //    guide.attach(GUIDE_PIN);
 //    guide.write(GUIDE_UP);
   esc.attach(ESC_PIN);
-  //esc_arm();
+  esc_arm();
   
  //Ensure no motor PWM at startup
  analogWrite(RT_FWD, 0);
@@ -137,22 +137,22 @@ void setup() {
  analogWrite(LT_FWD, 0);
  analogWrite(LT_REV, 0);
  
-// delay(1000);
-// analogWrite(RT_REV, 75);
-// analogWrite(LT_REV, 75);
-// delay(500);
+ delay(1000);
+ analogWrite(RT_REV, 75);
+ analogWrite(LT_REV, 75);
+ delay(500);
  
  
-// analogWrite(RT_REV, 150);
-// analogWrite(LT_REV, 150);
-// delay(500);
-// 
-// analogWrite(RT_REV, 225);
-// analogWrite(LT_REV, 225);
-// delay(50);
-// 
-// analogWrite(RT_REV, 255);
-// analogWrite(LT_REV, 255); 
+ analogWrite(RT_REV, 150);
+ analogWrite(LT_REV, 150);
+ delay(500);
+ 
+ analogWrite(RT_REV, 225);
+ analogWrite(LT_REV, 225);
+ delay(50);
+ 
+ analogWrite(RT_REV, 255);
+ analogWrite(LT_REV, 255); 
 }
 
 enum dirs{
@@ -165,13 +165,8 @@ enum dirs{
 
 void loop() 
 {
-  for(pos = IR_HOR_MIN; pos <= IR_HOR_MAX; ++pos)  
-  {
-    double tmp;
-    ir_hor.write(pos);              
-    delay(15);
-    Serial.println( IR_read() );
-  }
+  Serial.println("loop top");
+  
   //sensor test code for Mega 2560
   
 
@@ -188,31 +183,7 @@ void loop()
 //  servo_serial_test(ir_ver);
 //  servo_serial_test(us_hor);
 
-  while(1){
-//    Serial.println("forward.");
-//    
-//    analogWrite(RT_FWD, 255);
-//    analogWrite(LT_FWD, 255);
-//    delay(3000);
-// 
-//    analogWrite(RT_FWD, 75);
-//    analogWrite(LT_FWD, 75);
-//    delay(100);
-////
-//    analogWrite(RT_FWD, 0);
-//    analogWrite(LT_FWD, 0);
-//    delay(1000);
-    
-//    Serial.println("Reverse");
-//    analogWrite(RT_REV, 127);
-//    analogWrite(LT_REV, 127);
-//    delay(2000);
-//    
-//    analogWrite(RT_REV, 0);
-//    analogWrite(LT_REV, 0);
-//    delay(1000);
-  }
-  
+ 
   while(1);
   
   //Test motor
