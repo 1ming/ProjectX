@@ -1,15 +1,8 @@
-//libs
-
-#include <Servo.h> 
 #include <string.h>
 
 //macros
 #define ESC_MIN     30   // Min firing angle that the ESC will respond to
 #define ESC_MAX     180  // Max firing angle for ESC
-
-
-//globals
-Servo esc;
 
 void esc_toggle_brake()
 {
@@ -46,30 +39,30 @@ void esc_ramp(short start, short end, int step)
   sprintf(buf, "Ramp from %d to %d, step %d\n", start, end, step);
   Serial.write(buf);
   
-  for(speed = start; speed != end; speed = speed + step) {
+  for(speed = start; speed != end + step; speed = speed + step) {
     esc.write(speed);    
-    delay(500);
+    delay(250);
   }
 }
 
 
 void esc_arm(){
  // arm the speed controller, modify as necessary for your ESC  
-  Serial.println("\nArming, pin low, connect battery!"); 
-  Serial.println("Beep once for brake off, twice for on");
+  //Serial.println("Beep once for brake off, twice for on");
   esc.write(ESC_MIN); 
-  delay(5000); 
+  delay(1000); 
 
-  Serial.println("Arming, pin high");
-  Serial.println("Beep once for brake off, twice for on");  
-  
+//  Serial.println("Arming, pin high");
+//  Serial.println("Beep once for brake off, twice for on");  
+//  
   esc_ramp(ESC_MIN, ESC_MAX -30, 15);
   
-  Serial.println("\nArming, pin back down to low");
-  Serial.println("Beep four times, all is well\n");
-  esc_ramp(ESC_MAX - 30, ESC_MIN + 30, -15);
+//  Serial.println("\nArming, pin back down to low");
+//  Serial.println("Beep four times, all is well\n");
+  esc_ramp(ESC_MAX - 30, ESC_MIN , -15);
+  delay(1000);
 }
-//
+
 //void setup()
 //{
 //  esc.attach(9);

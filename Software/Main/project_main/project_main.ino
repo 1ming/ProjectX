@@ -64,18 +64,23 @@ Servo ir_hor, ir_ver, us_hor, esc, guide;
 boolean white_approaching = false;
 
 //ISR for kill switch
+volatile boolean killed_called = false;
 void killed()
 {
-    analogWrite(RT_FWD, 0);
-    analogWrite(LT_FWD, 0);
-    analogWrite(RT_REV, 0);
-    analogWrite(LT_REV, 0);
+  Serial.println("killed.");
+  analogWrite(RT_FWD, 0);
+  analogWrite(LT_FWD, 0);
+  analogWrite(RT_REV, 0);
+  analogWrite(LT_REV, 0);
     
-    esc.write(0);
+  Serial.println("Stop prop.");
+//  esc.write(ESC_MIN);
+  delay(5000);
+  //esc.detach();
     
-    while(1);
-  
-  //Serial.println("killed.");
+  Serial.println("dead.");
+  delay(5000);
+  killed_called = true;
 }
 
 void setup() {
@@ -102,11 +107,11 @@ void setup() {
   pinMode(trigger_pin, OUTPUT);
   pinMode(echo_pin, INPUT);
 
- // accel.init();
-  delay(1000);
+  accel.init();
+  delay(500);
   rgb_setup();
   
-  Serial.println("Got here.");
+  Serial.println("Sensor setup completed.");
   
   //timer interrupt setup
   
@@ -138,21 +143,21 @@ void setup() {
  analogWrite(LT_REV, 0);
  
  delay(1000);
- analogWrite(RT_REV, 75);
- analogWrite(LT_REV, 75);
+ analogWrite(RT_FWD, 255);
+ analogWrite(LT_FWD, 255);
  delay(500);
- 
- 
- analogWrite(RT_REV, 150);
- analogWrite(LT_REV, 150);
- delay(500);
- 
- analogWrite(RT_REV, 225);
- analogWrite(LT_REV, 225);
- delay(50);
- 
- analogWrite(RT_REV, 255);
- analogWrite(LT_REV, 255); 
+// 
+// 
+// analogWrite(RT_FWD, 150);
+// analogWrite(LT_FWD, 150);
+// delay(500);
+// 
+// analogWrite(RT_FWD, 225);
+// analogWrite(LT_FWD, 225);
+// delay(50);
+// 
+// analogWrite(RT_FWD, 255);
+// analogWrite(LT_FWD, 255); 
 }
 
 enum dirs{
@@ -183,7 +188,20 @@ void loop()
 //  servo_serial_test(ir_ver);
 //  servo_serial_test(us_hor);
 
- 
+
+  while(1){
+    esc.write(140);
+    Serial.println("done write");
+    delay(5000);
+    esc.write(ESC_MIN);
+    delay(5000);
+    Serial.println("done delay");
+    if(killed_called){
+      break;
+    }
+  }
+
+  Serial.println("Wait forever"); 
   while(1);
   
   //Test motor
@@ -228,15 +246,22 @@ void loop()
 ISR(TIMER2_COMPA_vect)
 {
   //check IR pulse to kill the switch
-  
+  if(killed_called)
+  {
+    esc.write(ESC_MIN);
+    //while(1);
+  }
+    
   static unsigned n_calls = 0;
   if (n_calls == 0){
     //Serial.println( IR_read() );
     //Serial.println( US_raw_read() );
 
     //Serial.flush();
-    //rgb_print_color_durations(); 
+    //rgb_print_color_durations();
+     
   }
+  
   
   ++n_calls %= 1000;
 }
