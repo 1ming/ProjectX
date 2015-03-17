@@ -49,4 +49,3 @@ void test_US_avg_max()
   Serial.print("Avg: ");
   Serial.println( US_read_avg() );  
 }
-

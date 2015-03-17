@@ -1,31 +1,37 @@
-#include <Servo.h> 
+#define IR_pin 0 //Analog pin 0
 
 double pos_left;
 double pos_right; 
-boolean left_set=false;
-boolean right_set=false;
+boolean left_set = false;
+boolean right_set = false;
+
+
 
 double IR_read()
 {
    return analogRead(IR_pin) * (5.0 / 1023.0); 
 }
 
-boolean IR_sweep()
+boolean IR_ramp_incoming()//Servo s_vert, Servo s_hor)
 {
-  ir_hor.write(IR_HOR_MID);
+  double IR_value;
   int pos;
-   for(pos = IR_VER_MIN; pos <= IR_VER_MAX; ++pos)  
+  
+  ir_hor.write(IR_HOR_MID);
+  
+  for(pos = IR_VER_MIN; pos <= IR_VER_MAX; ++pos)  
   {
     double tmp;    
-    ir_ver.write(pos);               
-    delay(15);
-    tmp=read_IRSensor();
-    if(tmp-IR_value>0.5)
+    ir_ver.write(pos);              
+    delay(15); 
+    tmp = IR_read();
+    if( (tmp - IR_value) > 0.5 )
     {
-      ramp_approaching=true;
+      
     }
-    IR_value=temp;    
+    IR_value = tmp;    
   }  
+  return true;
 }
 
 
@@ -33,12 +39,12 @@ int IR_sweep_ramp()
 {
   ir_ver.write(IR_VER_MID);
   int pos;
-   for(pos = 0; pos <= 180; pos += 1)  
+   for(pos = IR_HOR_MIN; pos <= IR_HOR_MAX; ++pos)  
   {
-    double IR_temp;
-    servo_hor.write(pos);              
+    double tmp;
+    ir_hor.write(pos);              
     delay(15);
-    IR_temp=read_IRSensor();
+    tmp=IR_read();
     if( (tmp > 0.25) && !left_set)
     {
       pos_left = pos;
