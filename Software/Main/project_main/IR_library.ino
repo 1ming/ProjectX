@@ -39,12 +39,14 @@ int IR_sweep_ramp()
 {
   ir_ver.write(IR_VER_MID);
   int pos;
-   for(pos = IR_HOR_MIN; pos <= IR_HOR_MAX; ++pos)  
+  
+  for(pos = IR_HOR_MIN; pos <= IR_HOR_MAX; ++pos)  
   {
     double tmp;
     ir_hor.write(pos);              
     delay(15);
-    tmp=IR_read();
+    tmp = IR_read();
+
     if( (tmp > 0.25) && !left_set)
     {
       pos_left = pos;

@@ -94,8 +94,6 @@ void setup() {
   pinMode(LED_pin, OUTPUT);
   digitalWrite(LED_pin, LOW);
   
- 
-  
   pinMode(out,INPUT);  
   pinMode(oe_bar, OUTPUT);
   digitalWrite(oe_bar, LOW); //keep RGB output enabled
@@ -103,8 +101,7 @@ void setup() {
   // Ultrasonic
   pinMode(trigger_pin, OUTPUT);
   pinMode(echo_pin, INPUT);
-  
- 
+
  // accel.init();
   delay(1000);
   rgb_setup();
@@ -140,10 +137,10 @@ void setup() {
  analogWrite(LT_FWD, 0);
  analogWrite(LT_REV, 0);
  
- delay(1000);
- analogWrite(RT_REV, 75);
- analogWrite(LT_REV, 75);
- delay(500);
+// delay(1000);
+// analogWrite(RT_REV, 75);
+// analogWrite(LT_REV, 75);
+// delay(500);
  
  
 // analogWrite(RT_REV, 150);
@@ -156,7 +153,6 @@ void setup() {
 // 
 // analogWrite(RT_REV, 255);
 // analogWrite(LT_REV, 255); 
-  
 }
 
 enum dirs{
@@ -169,6 +165,13 @@ enum dirs{
 
 void loop() 
 {
+  for(pos = IR_HOR_MIN; pos <= IR_HOR_MAX; ++pos)  
+  {
+    double tmp;
+    ir_hor.write(pos);              
+    delay(15);
+    Serial.println( IR_read() );
+  }
   //sensor test code for Mega 2560
   
 
@@ -209,8 +212,6 @@ void loop()
 //    analogWrite(LT_REV, 0);
 //    delay(1000);
   }
-  
-  
   
   while(1);
   
