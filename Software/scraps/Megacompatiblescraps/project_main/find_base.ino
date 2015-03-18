@@ -16,6 +16,7 @@ void find_base(boolean *side_a, unsigned int *dir, unsigned int *prev_dir)
       break;
     case 1:
       //turn right
+      
       *prev_dir=*dir;
       *dir=(*dir++)%4;
       state = 11;
