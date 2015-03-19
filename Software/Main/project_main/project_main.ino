@@ -1,7 +1,6 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_HMC5883_U.h>
 
-
 #include <Wire.h> // Must include Wire library for I2C
 #include <SFE_MMA8452Q.h> // Includes the SFE_MMA8452Q library
 #include <Servo.h> 
@@ -55,17 +54,15 @@
 //#define LT_A 18
 //#define LT_B 19
 
-//ESCs
+//ESC
 #define ESC_MIN     30   // Min firing angle that the ESC will respond to
 #define ESC_MAX     180  // Max firing angle for ESC
-
 
 //global
 MMA8452Q accel;    //accelerometer object
 Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
 
 Servo ir_hor, ir_ver, us_hor, esc, guide;
-
 
 boolean white_approaching = false;
 
@@ -79,13 +76,7 @@ void killed()
   analogWrite(RT_REV, 0);
   analogWrite(LT_REV, 0);
     
-  Serial.println("Stop prop.");
-//  esc.write(ESC_MIN);
-  delay(5000);
-  //esc.detach();
-    
   Serial.println("dead.");
-  delay(5000);
   killed_called = true;
 }
 
@@ -95,8 +86,7 @@ void setup() {
   
   //Kill switch interrupt
   attachInterrupt(1, killed, FALLING);
-  
-  
+   
   //Setup sensors
   accel.init();
   delay(500);
@@ -146,24 +136,7 @@ void setup() {
  //Ensure no motor PWM at startup
  motor_stop();
  
- //delay(1000);
- //analogWrite(RT_FWD, 255);
- //analogWrite(LT_FWD, 255);
- //delay(500);
-// 
-// 
-// analogWrite(RT_FWD, 150);
-// analogWrite(LT_FWD, 150);
-// delay(500);
-// 
-// analogWrite(RT_FWD, 225);
-// analogWrite(LT_FWD, 225);
-// delay(50);
-// 
-// analogWrite(RT_FWD, 255);
-// analogWrite(LT_FWD, 255); 
-
-  delay(100);
+ delay(100);
 }
 
 enum dirs{
@@ -193,7 +166,7 @@ void loop()
   esc_write(90); //TODO: calibrate
   delay(500);
   
-  while( accel_pitch_avg(10) > - 20.0 ) delay(10);   //TODO: calibrate
+  while( accel_pitch_avg(10) > -20.0 ) delay(10);   //TODO: calibrate
   
   //now sufficiently on the ramp to put down guide 
   //guide.write(GUIDE_DOWN);
@@ -210,24 +183,23 @@ void loop()
   motor_stop();
   delay(1000);
   
-  //use drive motors to go over the hump
-  Serial.println( "motor_fwd(150)" );
-  motor_fwd(150);
-  while(accel_pitch_avg(10) < 40) delay(10); //TODO: calibrate
-
-  //brake for ramp descent
-  Serial.println( "motor_rev(75)" );
-  motor_rev(75);                        //TODO: calibrate
-  while(accel_pitch_avg(10) > 10) delay(10); //TODO: calibrate
-  
-  Serial.println("motor_stop()");
-  motor_stop();
-    
+//  //use drive motors to go over the hump
+//  Serial.println( "motor_fwd(150)" );
+//  motor_fwd(150);
+//  while(accel_pitch_avg(10) < 40) delay(10); //TODO: calibrate
+//
+//  //brake for ramp descent
+//  Serial.println( "motor_rev(75)" );
+//  motor_rev(75);                        //TODO: calibrate
+//  while(accel_pitch_avg(10) > 10) delay(10); //TODO: calibrate
+//  
+//  Serial.println("motor_stop()");
+//  motor_stop();
+//    
   while(1);  
 }
   
-  
-
+   
 ISR(TIMER2_COMPA_vect)
 {
   //check IR pulse to kill the switch

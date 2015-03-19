@@ -80,30 +80,4 @@ void esc_stop()
   esc.write(ESC_MIN);
 }
 
-//void setup()
-//{
-//  esc.attach(9);
-//  Serial.begin(9600);
-// 
-////  toggle_brake();  
-//  arm();  
-//}
-//
-//void loop()
-//{
-//  Serial.println("Regular brake test!");
-//  esc_ramp(ESC_MIN, ESC_MAX, 5);
-//  esc_ramp(ESC_MAX, ESC_MIN, -5);
-//  
-//  Serial.println("\nNow test brake functionality!");
-//  Serial.println("Ramp...");
-//  esc_ramp(ESC_MIN, ESC_MAX - 30, 5);
-//  
-//  Serial.println("Kill!");
-//  esc.write(ESC_MIN);
-//  delay(5000);
-//  Serial.println("Done brake test...");
-//  
-//  esc.write(ESC_MIN);  
-//  delay(2000); // stop the motor for 5 seconds
-//}
+

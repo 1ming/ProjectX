@@ -152,8 +152,15 @@ void turn_90(char dir)
 //  Serial.println( "Difference: " + String(diff) );  
 //  
 //  Serial.println("starting motors");
+  if(dir == RIGHT)
+  {    
+    motor_right();
+  }
   
-  motor_right();
+  if(dir == LEFT)
+  {
+    motor_left();
+  }
   
   float cur_angle;
   while( diff > 5.0 )
@@ -167,7 +174,7 @@ void turn_90(char dir)
   
   motor_stop();
   //Serial.println( "Stopped at angle: " + String(mag_angle()) );
-  delay(3000); 
+  delay(100 ); 
 }
 
 void motor_test()
