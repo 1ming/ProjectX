@@ -23,8 +23,6 @@ void printCalculatedAccels()
 
 float accel_roll()
 {
-  while( !accel.ready() );
-  
   accel.read();
   return 180.0 / M_PI * (atan2(-1*accel.cy, accel.cz));
 }
@@ -41,7 +39,6 @@ double accel_roll_avg(unsigned n_avg)
 
 float accel_pitch()
 { 
-  while( !accel.ready() );
   accel.read();
   return 180.0 / M_PI * atan2( accel.cx, sqrt(accel.cy*accel.cy + accel.cz*accel.cz) );
 }

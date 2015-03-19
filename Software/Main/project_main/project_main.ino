@@ -186,13 +186,14 @@ void loop()
   //starting the ramp
   //guide.write(GUIDE_MID); 
   motor_fwd(255);
-  delay(1000);
+  delay(500);
   
   //use fan to get started on the ramp
   Serial.println( "esc_write(90)" ); 
   esc_write(90); //TODO: calibrate
+  delay(500);
   
-  while( accel_pitch() > -20.0 ) delay(50);   //TODO: calibrate
+  while( accel_pitch_avg(10) > - 20.0 ) delay(10);   //TODO: calibrate
   
   //now sufficiently on the ramp to put down guide 
   //guide.write(GUIDE_DOWN);
@@ -201,7 +202,7 @@ void loop()
   //now climb the ramp!
   Serial.println( "esc_write(105)" );
   esc_write(105);            //TODO: calibrate
-  while(accel_pitch() < 0) delay(50);    //TODO: calibrate
+  while(accel_pitch_avg(10) < 0) delay(10);    //TODO: calibrate
   
   //now level at the top of the ramp
   Serial.println( "esc_stop()" );
@@ -212,12 +213,12 @@ void loop()
   //use drive motors to go over the hump
   Serial.println( "motor_fwd(150)" );
   motor_fwd(150);
-  while(accel_pitch() < 40) delay(50); //TODO: calibrate
+  while(accel_pitch_avg(10) < 40) delay(10); //TODO: calibrate
 
   //brake for ramp descent
   Serial.println( "motor_rev(75)" );
   motor_rev(75);                        //TODO: calibrate
-  while(accel_pitch() > -20) delay(50); //TODO: calibrate
+  while(accel_pitch_avg(10) > 10) delay(10); //TODO: calibrate
   
   Serial.println("motor_stop()");
   motor_stop();
