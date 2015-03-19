@@ -1,6 +1,6 @@
+#include <Adafruit_Sensor.h>
 #include <Adafruit_HMC5883_U.h>
 
-#include <Adafruit_Sensor.h>
 
 #include <Wire.h> // Must include Wire library for I2C
 #include <SFE_MMA8452Q.h> // Includes the SFE_MMA8452Q library
@@ -44,10 +44,10 @@
 #define GUIDE_DOWN 60
 
 //Motor PWM
-#define RT_FWD 5
-#define RT_REV 4
-#define LT_FWD 7
-#define LT_REV 6
+#define RT_FWD 4
+#define RT_REV 5
+#define LT_FWD 6
+#define LT_REV 7
 
 ////Encoders
 //#define RT_A 2
@@ -90,27 +90,19 @@ void killed()
 }
 
 void setup() {
-  // put your setup code here, to run once:
-  
-  accel.init();
-  delay(500);
-  rgb_setup();
-      
   Serial.begin(9600);
+  Serial.println("Setup.");
+  
   //Kill switch interrupt
   attachInterrupt(1, killed, FALLING);
   
-  //INIT MAG
+  
+  //Setup sensors
+  accel.init();
+  delay(500);
+  rgb_setup();
   mag.begin();
   
-  //CODE TO GET MAG READINGS FROM SENSOR AND DO CORRECTION
-  
-  float start_angle = mag_angle();
- 
- 
- //SET CALIBRATED ANGLE HERE
- 
-  //CODE TO TRANSFER THE 
   //Colour sensor
   pinMode(freq_pin,OUTPUT);
   pinMode(freq_highpin,OUTPUT);
@@ -126,8 +118,6 @@ void setup() {
   // Ultrasonic
   pinMode(trigger_pin, OUTPUT);
   pinMode(echo_pin, INPUT);
-
-  
   
   Serial.println("Sensor setup completed.");
   
@@ -142,23 +132,19 @@ void setup() {
   TIMSK2 |= (1 << OCIE1A);
     
   //attach and center servos    
-  ir_hor.attach(IR_HOR_PIN);
-
-  //ir_hor.write(IR_HOR_MID);
-  ir_ver.attach(IR_VER_PIN);
-  ir_ver.write(IR_VER_MID);
-  //us_hor.attach(US_HOR_PIN);
-  //us_hor.write(US_HOR_MID);
-//    guide.attach(GUIDE_PIN);
-//    guide.write(GUIDE_UP);
-  esc.attach(ESC_PIN);
-  esc_arm();
+//  ir_hor.attach(IR_HOR_PIN);
+//  ir_hor.write(IR_HOR_MID);
+//  ir_ver.attach(IR_VER_PIN);
+//  ir_ver.write(IR_VER_MID);
+//  us_hor.attach(US_HOR_PIN);
+//  us_hor.write(US_HOR_MID);
+//  guide.attach(GUIDE_PIN);
+//  guide.write(GUIDE_UP);
+//  esc.attach(ESC_PIN);a
+//  esc_arm();
   
  //Ensure no motor PWM at startup
- analogWrite(RT_FWD, 150);
- analogWrite(RT_REV, 0);
- analogWrite(LT_FWD, 0);
- analogWrite(LT_REV, 150);
+ motor_stop();
  
  //delay(1000);
  //analogWrite(RT_FWD, 255);
@@ -176,6 +162,8 @@ void setup() {
 // 
 // analogWrite(RT_FWD, 255);
 // analogWrite(LT_FWD, 255); 
+
+  delay(100);
 }
 
 enum dirs{
@@ -190,11 +178,51 @@ void loop()
 {
   Serial.println("loop top");
   
+ 
   //sensor test code for Mega 2560
   
-  sensors_event_t event; 
-  mag.getEvent(&event);
-
+  //CODE TO GET MAG READINGS FROM SENSOR AND DO CORRECTION
+  
+  float start_angle = mag_angle();
+  float stop_angle = (start_angle + 90);
+   
+  if( stop_angle > 360 ){
+    stop_angle -= 360;
+  }
+  
+  if( stop_angle < 0 ){
+    stop_angle += 360;
+  }
+  
+  float diff =  abs(mag_angle() - stop_angle); 
+    
+  Serial.println( "start_angle: " + String(start_angle) );
+  Serial.println( "stop_angle: " + String(stop_angle) );
+  Serial.println( "Difference: " + String(diff) );  
+  
+  
+//  while(Serial.available() == 0);
+//  Serial.read();  
+  
+  Serial.println("starting motors");
+  
+  motor_right(255, 255);
+  
+  float cur_angle;
+  while( diff > 5.0 )
+  {
+    delay(10);
+    cur_angle = mag_angle();
+    Serial.println( cur_angle ); 
+    diff =  abs(cur_angle - stop_angle);
+    Serial.println( "Difference: " + String(diff) );  
+  }
+  
+  motor_stop();
+  Serial.println( "Stopped at angle: " + String(mag_angle()) );
+  delay(3000); 
+ 
+ 
 //   test_US_avg_max();   
 //   print_accel_vals();
    
@@ -222,44 +250,44 @@ void loop()
 //  }
 
   
-
-  Serial.println("Wait forever"); 
-  //while(1);
-  
-  //Test motor
-  analogWrite(RT_FWD, 255);
-  analogWrite(LT_FWD, 255);
-  double  dist_set = US_read_avg();
-  double cur_dist = dist_set;
-  double dist_thresh = 10;
-  int dir = EAST;
-  double diff = 0;
-  int k = 10;
-  
-  us_hor.write(US_HOR_MIN); //fully left for west movement
-  
-  while(1)
-  {
-    diff = cur_dist - dist_set;
-    if( abs(diff) > dist_thresh )
-    {  
-      if(dir == EAST && diff > 0)
-      {
-        analogWrite(LT_FWD, 255 - (int)(k * diff));
-        analogWrite(RT_FWD, 255);
-      }
-      if(dir == EAST && diff < 0)
-      {
-        analogWrite(RT_FWD, 255 - (int)(k * diff));
-        analogWrite(LT_FWD, 255);
-      }
-    }
-    else
-    {
-        analogWrite(RT_FWD, 255);
-        analogWrite(LT_FWD, 255);
-    }
-  }
+//
+//  Serial.println("Wait forever"); 
+//  while(1);
+//  
+//  //Test motor
+//  analogWrite(RT_FWD, 255);
+//  analogWrite(LT_FWD, 255);
+//  double  dist_set = US_read_avg();
+//  double cur_dist = dist_set;
+//  double dist_thresh = 10;
+//  int dir = EAST;
+//  double diff = 0;
+//  int k = 10;
+//  
+//  us_hor.write(US_HOR_MIN); //fully left for west movement
+//  
+//  while(1)
+//  {
+//    diff = cur_dist - dist_set;
+//    if( abs(diff) > dist_thresh )
+//    {  
+//      if(dir == EAST && diff > 0)
+//      {
+//        analogWrite(LT_FWD, 255 - (int)(k * diff));
+//        analogWrite(RT_FWD, 255);
+//      }
+//      if(dir == EAST && diff < 0)
+//      {
+//        analogWrite(RT_FWD, 255 - (int)(k * diff));
+//        analogWrite(LT_FWD, 255);
+//      }
+//    }
+//    else
+//    {
+//        analogWrite(RT_FWD, 255);
+//        analogWrite(LT_FWD, 255);
+//    }
+//  }
 
 }
   
@@ -288,16 +316,4 @@ ISR(TIMER2_COMPA_vect)
   ++n_calls %= 1000;
 }
 
-float mag_angle()
-{
-  sensors_event_t event; 
-  mag.getEvent(&event);
-   accel.read();
-  float  roll  = (atan2(-1*accel.cy, accel.cz));
-  float pitch = (atan2(accel.cx, sqrt(accel.cy*accel.cy + accel.cz*accel.cz)));
-  
-  float shift_x=(event.magnetic.x)*cos(pitch) + (event.magnetic.y)*sin(roll)*sin(pitch) - event.magnetic.z*cos(roll)*sin(pitch);
-  float shift_y = event.magnetic.y*cos(roll) + event.magnetic.z*sin(roll);
-  
-  float heading = atan2(shift_y, shift_x); 
-}
+
