@@ -5,14 +5,18 @@
 //  int blue;
 //};
 
-#include "prototypes.h"
-
-class Color
-{
-  int red;
-  int green;
-  int blue;
-};
+namespace Color {
+    typedef struct 
+    {
+      int id;
+      int pin[5];
+      int tiempoCero;
+      int tiempoApagado;
+      int estado;
+      int vecinos[6];
+    } Color;
+  
+}
 
 
 long rgb_get_pulse()
@@ -39,7 +43,7 @@ long read_green()
   return rgb_get_pulse();
 }
 
-boolean rgb_compare(Color input, int reference, int tolerance)
+boolean rgb_compare(Color::Color input, int reference, int tolerance)
 {
   return true;
 }
