@@ -55,8 +55,6 @@
 //#define LT_A 18
 //#define LT_B 19
 
-
-
 //ESCs
 #define ESC_MIN     30   // Min firing angle that the ESC will respond to
 #define ESC_MAX     180  // Max firing angle for ESC
@@ -112,8 +110,6 @@ void setup() {
   pinMode(color_blue,OUTPUT);
   pinMode(LED_pin, OUTPUT);
   digitalWrite(LED_pin, LOW);
-
-Serial.println("hi my name is pablo II");
   
   pinMode(out,INPUT);  
   pinMode(oe_bar, OUTPUT);
@@ -183,115 +179,9 @@ void loop()
   Serial.println("loop top");
   
  
-  //sensor test code for Mega 2560
-  
-  //CODE TO GET MAG READINGS FROM SENSOR AND DO CORRECTION
-  
-  float start_angle = mag_angle();
-  float stop_angle = (start_angle + 90);
-   
-  if( stop_angle > 360 ){
-    stop_angle -= 360;
-  }
-  
-  if( stop_angle < 0 ){
-    stop_angle += 360;
-  }
-  
-  float diff =  abs(mag_angle() - stop_angle); 
-    
-  Serial.println( "start_angle: " + String(start_angle) );
-  Serial.println( "stop_angle: " + String(stop_angle) );
-  Serial.println( "Difference: " + String(diff) );  
-  
-  
-//  while(Serial.available() == 0);
-//  Serial.read();  
-  
-  Serial.println("starting motors");
-  
-  motor_right(255, 255);
-  
-  float cur_angle;
-  while( diff > 5.0 )
-  {
-    delay(10);
-    cur_angle = mag_angle();
-    Serial.println( cur_angle ); 
-    diff =  abs(cur_angle - stop_angle);
-    Serial.println( "Difference: " + String(diff) );  
-  }
-  
-  motor_stop();
-  Serial.println( "Stopped at angle: " + String(mag_angle()) );
-  delay(3000); 
+
  
- 
-//   test_US_avg_max();   
-//   print_accel_vals();
-   
-//  Serial.print("IR val: ");
-//  Serial.println( IR_read() );  
-//  while( !Serial.available() );
-//  Serial.read();
-//  rgb_print_color_durations();
 
-//  servo_serial_test(ir_hor);
-//  servo_serial_test(ir_ver);
-//  servo_serial_test(us_hor);
-
-
-//  while(1){
-//    esc.write(140);
-//    Serial.println("done write");
-//    delay(5000);
-//    esc.write(ESC_MIN);
-//    delay(5000);
-//    Serial.println("done delay");
-//    if(killed_called){
-//      break;
-//    }
-//  }
-
-  
-//
-//  Serial.println("Wait forever"); 
-//  while(1);
-//  
-//  //Test motor
-//  analogWrite(RT_FWD, 255);
-//  analogWrite(LT_FWD, 255);
-//  double  dist_set = US_read_avg();
-//  double cur_dist = dist_set;
-//  double dist_thresh = 10;
-//  int dir = EAST;
-//  double diff = 0;
-//  int k = 10;
-//  
-//  us_hor.write(US_HOR_MIN); //fully left for west movement
-//  
-//  while(1)
-//  {
-//    diff = cur_dist - dist_set;
-//    if( abs(diff) > dist_thresh )
-//    {  
-//      if(dir == EAST && diff > 0)
-//      {
-//        analogWrite(LT_FWD, 255 - (int)(k * diff));
-//        analogWrite(RT_FWD, 255);
-//      }
-//      if(dir == EAST && diff < 0)
-//      {
-//        analogWrite(RT_FWD, 255 - (int)(k * diff));
-//        analogWrite(LT_FWD, 255);
-//      }
-//    }
-//    else
-//    {
-//        analogWrite(RT_FWD, 255);
-//        analogWrite(LT_FWD, 255);
-//    }
-//  }
 
 }
   

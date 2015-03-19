@@ -1,42 +1,39 @@
+#define RIGHT 0
+#define LEFT  1
+
 void motor_stop()
 {
-  analogWrite(RT_FWD, 0);
-  analogWrite(RT_REV, 0);
-  analogWrite(LT_FWD, 0);
-  analogWrite(LT_REV, 0);
-  delay(100);
+   analogWrite(RT_FWD, 0);
+   analogWrite(RT_REV, 0);
+   analogWrite(LT_FWD, 0);
+   analogWrite(LT_REV, 0);
+   delay(100);
 }
 
 void motor_brake()
 {
   //Questionable...
-  analogWrite(RT_FWD, 255);
-  analogWrite(RT_REV, 255);
-  analogWrite(LT_FWD, 255);
-  analogWrite(LT_REV, 255);
-
-  delay(100);
-
-  analogWrite(RT_FWD, 0);
-  analogWrite(RT_REV, 0);
-  analogWrite(LT_FWD, 0);
-  analogWrite(LT_REV, 0);
+   analogWrite(RT_FWD, 255);
+   analogWrite(RT_REV, 255);
+   analogWrite(LT_FWD, 255);
+   analogWrite(LT_REV, 255);
+   
+   delay(100);
+   
+   analogWrite(RT_FWD, 0);
+   analogWrite(RT_REV, 0);
+   analogWrite(LT_FWD, 0);
+   analogWrite(LT_REV, 0);
 }
 
 void motor_fwd(int pwm)
 {
-  analogWrite(RT_REV, 0);
-  analogWrite(RT_FWD, pwm);
-  analogWrite(LT_REV, 0);
-  analogWrite(LT_FWD, pwm);
+  motor_on(pwm, pwm);
 }
 
 void motor_rev(int pwm)
 {
-  analogWrite(RT_FWD, 0);
-  analogWrite(LT_FWD, 0);
-  analogWrite(RT_REV, pwm);
-  analogWrite(LT_REV, pwm);
+   motor_on(-pwm, -pwm);
 }
 
 void motor_on(int pwm_lt, int pwm_rt)
@@ -68,108 +65,108 @@ void motor_on(int pwm_lt, int pwm_rt)
   }
 }
 
-void motor_left(int pwm_lt, int pwm_rt)
+void motor_left()
 {
-  analogWrite(RT_REV, 0);
-  analogWrite(LT_FWD, 0);
-  analogWrite(RT_FWD, pwm_rt);
-  analogWrite(LT_REV, pwm_lt);
+  motor_on(-255, 255);
 }
 
-
-void adjust_dr_right(int pwm, int k)
+void motor_right()
 {
-  analogWrite(RT_FWD, 0);
-  delay(int(k));
-  analogWrite(RT_FWD, pwm);
-
+  motor_on(255, -255);
 }
 
-void adjust_dr_left(int pwm, int k)
+void drive_heading()
 {
-  analogWrite(LT_FWD, 0);
-  delay(int(k));
-  analogWrite(LT_FWD, pwm);
+//  analogWrite(RT_FWD, 255);
+//  analogWrite(LT_FWD, 255);
+//  double  dist_set = US_read_avg();
+//  double cur_dist = dist_set;
+//  double dist_thresh = 10;
+//  int dir = EAST;
+//  double diff = 0;
+//  int k = 10;
+//  
+//  us_hor.write(US_HOR_MIN); //fully left for west movement
+//  
+//  while(1)
+//  {
+//    diff = cur_dist - dist_set;
+//    if( abs(diff) > dist_thresh )
+//    {  
+//      if(dir == EAST && diff > 0)
+//      {
+//        analogWrite(LT_FWD, 255 - (int)(k * diff));
+//        analogWrite(RT_FWD, 255);
+//      }
+//      if(dir == EAST && diff < 0)
+//      {
+//        analogWrite(RT_FWD, 255 - (int)(k * diff));
+//        analogWrite(LT_FWD, 255);
+//      }
+//    }
+//    else
+//    {
+//        analogWrite(RT_FWD, 255);
+//        analogWrite(LT_FWD, 255);
+//    }
+//  }
 }
 
-void adjust_right()
+void turn_90_rt()
 {
-  analogWrite(LT_REV, 150);
-  delay(500);
-  analogWrite(LT_REV, 0);
+  turn_90(RIGHT);
 }
 
-void adjust_left()
+void turn_90_lt()
 {
-  analogWrite(RT_REV, 150);
-  delay(500);
-  analogWrite(RT_REV, 0);
-
+  turn_90(LEFT);
 }
 
-void turn_right_90()
+void turn_90(char dir)
 {
   float start_angle = mag_angle();
-  float stop_angle = (start_angle + 90);
-
-  if ( stop_angle > 360 ) {
-    stop_angle -= 360;
-  }
-
-  if ( stop_angle < 0 ) {
-    stop_angle += 360;
-  }
-
-  float diff =  abs(mag_angle() - stop_angle);
-
-  motor_right(255, 255);
-
-  float cur_angle;
-  while ( diff > 5.0 )
-  {
-    delay(10);
-    cur_angle = mag_angle();
-    
-    diff =  abs(cur_angle - stop_angle);
-    
-  }
-
-  motor_stop();
+  float stop_angle;
   
-  delay(3000);
-}
-
-void turn_left_90()
-{
-  float start_angle = mag_angle();
-  float stop_angle = (start_angle - 90);
-
-  if ( stop_angle > 360 ) {
+  if(dir == RIGHT)
+  {
+    stop_angle = start_angle + 90;
+  }
+  else
+  {
+    stop_angle = start_angle - 90;
+  }
+  
+  if( stop_angle > 360 )
+  {
     stop_angle -= 360;
   }
-
-  if ( stop_angle < 0 ) {
+  
+  if( stop_angle < 0 ){
     stop_angle += 360;
   }
-
-  float diff =  abs(mag_angle() - stop_angle);
-
-  motor_right(255, 255);
-
+  
+  float diff =  abs(mag_angle() - stop_angle); 
+    
+//  Serial.println( "start_angle: " + String(start_angle) );
+//  Serial.println( "stop_angle: " + String(stop_angle) );
+//  Serial.println( "Difference: " + String(diff) );  
+//  
+//  Serial.println("starting motors");
+  
+  motor_right();
+  
   float cur_angle;
-  while ( diff > 5.0 )
+  while( diff > 5.0 )
   {
     delay(10);
     cur_angle = mag_angle();
-    
+    //Serial.println( cur_angle ); 
     diff =  abs(cur_angle - stop_angle);
-    
+    //Serial.println( "Difference: " + String(diff) );  
   }
-
+  
   motor_stop();
-   
+  //Serial.println( "Stopped at angle: " + String(mag_angle()) );
+  delay(3000); 
 }
-
-
-
 
