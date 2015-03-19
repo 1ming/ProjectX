@@ -59,12 +59,12 @@ void motor_on(int pwm_lt, int pwm_rt)
   if (pwm_rt < 0)
   {
     analogWrite(RT_FWD, 0);
-    analogWrite(RT_REV, pwm_lt);
+    analogWrite(RT_REV, pwm_rt);
   }
   else
   {
     analogWrite(RT_REV, 0);
-    analogWrite(RT_FWD, pwm_lt);
+    analogWrite(RT_FWD, pwm_rt);
   }
 }
 
