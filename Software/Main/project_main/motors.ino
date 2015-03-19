@@ -39,12 +39,33 @@ void motor_rev(int pwm)
   analogWrite(LT_REV, pwm);
 }
 
-void motor_right(int pwm_lt, int pwm_rt)
+void motor_on(int pwm_lt, int pwm_rt)
 {
-  analogWrite(RT_FWD, 0);
-  analogWrite(LT_REV, 0);
-  analogWrite(RT_REV, pwm_rt);
-  analogWrite(LT_FWD, pwm_lt);
+  //accepts two ints for the two sides
+  //-ve values write to reverse pins, 
+  //+ve values write to forward pins
+  
+  if (pwm_lt < 0)
+  {
+    analogWrite(LT_FWD, 0);
+    analogWrite(LT_REV, pwm_lt);
+  }
+  else
+  {
+    analogWrite(LT_REV, 0);
+    analogWrite(LT_FWD, pwm_lt);
+  }
+  
+  if (pwm_rt < 0)
+  {
+    analogWrite(RT_FWD, 0);
+    analogWrite(RT_REV, pwm_rt);
+  }
+  else
+  {
+    analogWrite(RT_REV, 0);
+    analogWrite(RT_FWD, pwm_rt);
+  }
 }
 
 void motor_left(int pwm_lt, int pwm_rt)
@@ -54,6 +75,7 @@ void motor_left(int pwm_lt, int pwm_rt)
   analogWrite(RT_FWD, pwm_rt);
   analogWrite(LT_REV, pwm_lt);
 }
+
 
 void adjust_dr_right(int pwm, int k)
 {
@@ -147,6 +169,7 @@ void turn_left_90()
   motor_stop();
    
 }
+
 
 
 
