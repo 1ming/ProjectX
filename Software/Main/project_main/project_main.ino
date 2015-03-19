@@ -110,6 +110,8 @@ void setup() {
   pinMode(color_blue,OUTPUT);
   pinMode(LED_pin, OUTPUT);
   digitalWrite(LED_pin, LOW);
+
+Serial.println("hi my name is pablo ");
   
   pinMode(out,INPUT);  
   pinMode(oe_bar, OUTPUT);
