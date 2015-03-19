@@ -16,24 +16,44 @@ void printCalculatedAccels()
 { 
   accel.read();
   
-  Serial.print(accel.cx, 3);
-  Serial.print("\n");
-  Serial.print(accel.cy, 3);
-  Serial.print("\n");
-  Serial.print(accel.cz, 3);
-  Serial.print("\n");
+  Serial.println(accel.cx, 3);
+  Serial.println(accel.cy, 3);
+  Serial.println(accel.cz, 3);
 }
 
-float  accel_roll()
+float accel_roll()
 {
+  while( !accel.ready() );
+  
   accel.read();
-  return (atan2(-1*accel.cy, accel.cz));
+  return 180.0 / M_PI * (atan2(-1*accel.cy, accel.cz));
+}
+
+double accel_roll_avg(unsigned n_avg)
+{
+  double avg = 0; 
+  for(unsigned i = 0; i < n_avg; ++i)
+  {
+    avg += accel_roll() / n_avg;
+  }
+  return avg;
 }
 
 float accel_pitch()
 { 
+  while( !accel.ready() );
   accel.read();
-  return atan2(accel.cx, sqrt(accel.cy*accel.cy + accel.cz*accel.cz));
+  return 180.0 / M_PI * atan2( accel.cx, sqrt(accel.cy*accel.cy + accel.cz*accel.cz) );
+}
+
+double accel_pitch_avg(unsigned n_avg)
+{
+  double avg = 0; 
+  for(unsigned i = 0; i < n_avg; ++i)
+  {
+    avg += accel_pitch() / n_avg;
+  }
+  return avg;
 }
 
 
@@ -45,7 +65,7 @@ float mag_angle()
   float  roll  = accel_roll();
   float pitch = accel_pitch();
   
-  float shift_x=(event.magnetic.x)*cos(pitch) + (event.magnetic.y)*sin(roll)*sin(pitch) - event.magnetic.z*cos(roll)*sin(pitch);
+  float shift_x = (event.magnetic.x)*cos(pitch) + (event.magnetic.y)*sin(roll)*sin(pitch) - event.magnetic.z*cos(roll)*sin(pitch);
   float shift_y = event.magnetic.y*cos(roll) + event.magnetic.z*sin(roll);
   
   float heading = atan2(shift_y, shift_x); 
