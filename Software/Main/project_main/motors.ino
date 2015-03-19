@@ -55,36 +55,5 @@ void motor_left(int pwm_lt, int pwm_rt)
   analogWrite(LT_REV, pwm_lt);
 }
 
-void adjust_dr_right(int pwm_lt, int k)
-{
-  analogWrite(RT_REV, 0);
-  analogWrite(LT_FWD, 0);
-  analogWrite(RT_FWD, pwm_rt);
-  analogWrite(LT_REV, pwm_lt);
-}
-
-void adjust_dr_left(int pwm_lt, int k)
-{
-  analogWrite(RT_REV, 0);
-  analogWrite(LT_FWD, 0);
-  analogWrite(RT_FWD, pwm_rt);
-  analogWrite(LT_REV, pwm_lt);
-}
-
-void adjust_right()
-{
-  analogWrite(LT_REV, 150);
-  delay(500);
-  analogWrite(LT_REV, 0)
-}
-
-void adjust_left()
-{
-  analogWrite(RT_REV, 150);
-  delay(500);
-  analogWrite(RT_REV, 0);
-  
-}
-
 
 
