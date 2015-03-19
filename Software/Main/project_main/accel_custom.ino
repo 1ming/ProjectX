@@ -24,13 +24,26 @@ void printCalculatedAccels()
   Serial.print("\n");
 }
 
+float  accel_roll()
+{
+  accel.read();
+  return (atan2(-1*accel.cy, accel.cz));
+}
+
+float accel_pitch()
+{ 
+  accel.read();
+  return atan2(accel.cx, sqrt(accel.cy*accel.cy + accel.cz*accel.cz));
+}
+
+
 float mag_angle()
 {
   sensors_event_t event; 
   mag.getEvent(&event);
-   accel.read();
-  float  roll  = (atan2(-1*accel.cy, accel.cz));
-  float pitch = (atan2(accel.cx, sqrt(accel.cy*accel.cy + accel.cz*accel.cz)));
+  accel.read();
+  float  roll  = accel_roll();
+  float pitch = accel_pitch();
   
   float shift_x=(event.magnetic.x)*cos(pitch) + (event.magnetic.y)*sin(roll)*sin(pitch) - event.magnetic.z*cos(roll)*sin(pitch);
   float shift_y = event.magnetic.y*cos(roll) + event.magnetic.z*sin(roll);

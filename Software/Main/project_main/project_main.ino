@@ -141,7 +141,7 @@ void setup() {
 //  guide.attach(GUIDE_PIN);
 //  guide.write(GUIDE_UP);
 //  esc.attach(ESC_PIN);a
-//  esc_arm();
+  esc_arm();
   
  //Ensure no motor PWM at startup
  motor_stop();
@@ -178,11 +178,44 @@ void loop()
 {
   Serial.println("loop top");
   
- 
+  while(1)
+  {
+    Serial.println(accel_pitch());
+  }
 
  
+  //starting the ramp
+  
+  //guide.write(GUIDE_MID); 
+  motor_fwd(255);
+  
+  //use fan to get started on the ramp
+  esc_write(90); //TODO: calibrate
+  while(accel_pitch() < 20.0); //TODO: calibrate
+  
+  //now sufficiently on the ramp to put down guide and 
+  //guide.write(GUIDE_DOWN);
+  delay(500);
 
+  //now climb the ramp!
+  esc_write(105); //TODO: calibrate
+  while(accel_pitch > 0);  ////TODO: calibrate
+  
+  //now level at the top of the ramp
+  esc_stop();
+  motor_stop();
+  delay(1000);
+  
+  //use drive motors to go over the hump
+  motor_fwd(150);
+  while(accel_pitch() > -40); //TODO: calibrate
 
+  //brake for ramp descent
+  motor_rev(75); //TODO: calibrate
+  while(accel_pitch() < -20); //TODO: calibrate
+  
+  
+  //while(1);  
 }
   
   
@@ -193,7 +226,6 @@ ISR(TIMER2_COMPA_vect)
   if(killed_called)
   {
     esc.write(ESC_MIN);
-    //while(1);
   }
     
   static unsigned n_calls = 0;

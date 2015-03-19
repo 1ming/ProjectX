@@ -170,3 +170,31 @@ void turn_90(char dir)
   delay(3000); 
 }
 
+void motor_test()
+{
+  //Just go fwd, rev, right, left to test traction and motors
+  
+  motor_fwd(255);
+  delay(2000);
+  
+  motor_stop();
+  delay(1000);
+  
+  motor_rev(255);
+  delay(2000);
+  
+  motor_stop();
+  delay(1000);
+  
+  motor_right();
+  delay(2000);
+  
+  motor_stop();
+  delay(1000);
+  
+  motor_left();
+  delay(2000);
+  
+  motor_stop();
+  delay(1000); 
+}
