@@ -111,7 +111,7 @@ void setup() {
   pinMode(LED_pin, OUTPUT);
   digitalWrite(LED_pin, LOW);
 
-Serial.println("hi my name is pablo ");
+Serial.println("hi my name is pablo II");
   
   pinMode(out,INPUT);  
   pinMode(oe_bar, OUTPUT);
