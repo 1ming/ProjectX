@@ -1,70 +1,118 @@
-#include <Servo.h> 
+#define IR_pin 0 //Analog pin 0
 
-double pos_left;
-double pos_right; 
-boolean left_set=false;
-boolean right_set=false;
 
-double read_IRSensor()
+
+
+double IR_read()
 {
-  int sensorValue = analogRead(A0); 
-  double voltage = sensorValue * (5.0 / 1023.0);
+   return analogRead(IR_pin) * (5.0 / 1023.0); 
 }
 
-boolean sweep_IR()
+double IR_read_dist()
 {
-  servo_hor.write(90);
+  return (34.13 / IR_read() - 7.133);
+}
+
+
+boolean IR_ramp_incoming()//Servo s_vert, Servo s_hor)
+{
+  double IR_value;
   int pos;
-   for(pos = 90; pos <= 180; pos += 1)  
+  
+  ir_hor.write(IR_HOR_MID);
+  
+  for(pos = IR_VER_MIN; pos <= IR_VER_MAX; ++pos)  
   {
-    double IR_temp;    
-    servo_ver.write(pos);              
-    delay(15);
-    IR_temp=read_IRSensor();
-    if(IR_temp-IR_value>0.1)
+    double tmp;    
+    ir_ver.write(pos);              
+    delay(15); 
+    tmp = IR_read();
+    if( (tmp - IR_value) > 0.5 )
     {
-      ramp_approaching=true;
+      
     }
-    IR_value=IR_temp;    
+    IR_value = tmp;    
   }  
+  return true;
 }
 
 
-boolean sweep_ramp()
+int IR_sweep_ramp()
 {
-  servo_ver.write(90);
-  int pos;
-   for(pos = 0; pos <= 180; pos += 1)  
+  const unsigned char start_angle = 135;
+  const unsigned char end_angle = 45;
+  
+  ir_ver.write(IR_VER_MID);
+  double dist[start_angle - end_angle];
+  int pos, pos_left, pos_right;
+  boolean left_set = false;
+  boolean right_set = false;
+  double tmp;
+
+  //IR scan
+  int i = 0;
+  
+  //Get ramp distance (assumes ramp in front of IR)
+  ir_hor.write(IR_HOR_MID);
+  delay(500);
+  
+  //take average of 100 readings for threshold
+  double thresh = 0;
+  for (int i = 0; i < 100; ++i)
   {
-    double IR_temp;
-    servo_hor.write(pos);              
-    delay(15);
-    IR_temp=read_IRSensor();
-    if(IR_temp>0.25&&!left_set)
+    thresh += IR_read_dist() / 100;
+  } 
+  
+  //add 10% margin to threshhold
+  thresh += thresh * 0.1;
+//  Serial.println( "Thresshold: " + String(thresh) ); 
+  
+  ir_hor.write(start_angle);
+  delay(500);
+  
+  for(pos = start_angle; pos >= end_angle; --pos)  
+  {
+    double tmp;    
+    ir_hor.write(pos);              
+    delay(100);
+    
+    dist[i] = 0;
+    for(int j = 0; j < 100; ++j)
     {
-      pos_left=pos;
-      left_set=true;
+      dist[i] += IR_read_dist() / 100;
     }
-    if(IR_temp<0.25&&!right_set&&left_set)
+    
+//    Serial.print("pos: ");
+//    Serial.print(pos);
+//    Serial.print("  IR dist: ");
+//    Serial.println(dist[i]);
+    i++;   
+  }
+  
+  //process results
+  pos = start_angle;
+  for (int i = 0; i < (start_angle - end_angle); ++i)
+  {
+    tmp = dist[i];
+
+    if( (tmp < thresh) && !left_set)
     {
-      pos_right=pos;
-      right_set=true;
+      pos_left = pos;
+      left_set = true;
+    }
+    
+    if( (tmp > thresh) && left_set && !right_set)
+    {
+      pos_right = pos;
+      right_set = true;
     }     
+    pos--;
   }
-  if(abs(pos_left-(180-pos_right))<=3)
-  {
-    return true;
-  }
-  if(pos_left-(180-pos_right)<=-5)
-  {
-    //adjust right, adjust proportional to the angle difference
-    return false;
-  }
-  if((180-pos_right)-pos_left<=-5)
-  {
-    //adjust left, adjust proportional to the angle difference
-    return false;
-  }
+    
+//  Serial.println("Left pos: " + String(pos_left) );
+//  Serial.println("Right pos: " + String(pos_right) );
+//  Serial.print("Angle: ");
+  return ( 90 - pos_right - (pos_left - 90) );
 }
 
 
