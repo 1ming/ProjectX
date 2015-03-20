@@ -1,3 +1,4 @@
+#include "prototypes.h"
 #include <Adafruit_Sensor.h>
 #include <Adafruit_HMC5883_U.h>
 
@@ -54,6 +55,11 @@
 //#define LT_A 18
 //#define LT_B 19
 
+#define north 0
+#define east 1
+#define south 2
+#define west 3
+
 //ESC
 #define ESC_MIN     30   // Min firing angle that the ESC will respond to
 #define ESC_MAX     180  // Max firing angle for ESC
@@ -65,6 +71,11 @@ Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
 Servo ir_hor, ir_ver, us_hor, esc, guide;
 
 boolean white_approaching = false;
+
+void find_ramp(boolean *side_a, Mag_dir::Mag_dir *mag_dir, unsigned int *dir, unsigned int *prev_dir);
+void find_base(boolean *side_a, Mag_dir::Mag_dir *mag_dir, unsigned int *dir, unsigned int *prev_dir);
+
+Mag_dir::Mag_dir mag2;
 
 //ISR for kill switch
 volatile boolean killed_called = false;
@@ -138,6 +149,33 @@ void setup() {
  motor_stop();
  
  delay(100);
+ 
+ float calibrated_angle = mag_angle();
+  
+
+  
+  mag2.WEST = calibrated_angle;
+
+  mag2.NORTH = calibrated_angle + 90;
+
+  if (mag2.NORTH > 360)
+    mag2.NORTH -= 360;
+  if (mag2.NORTH < 360)
+    mag2.NORTH += 360;
+
+  mag2.EAST = mag2.NORTH + 90;
+
+  if (mag2.EAST > 360)
+    mag2.EAST -= 360;
+  if (mag2.EAST < 360)
+    mag2.EAST += 360;
+    
+  mag2.SOUTH=mag2.EAST+90;
+  
+  if(mag2.SOUTH > 360)
+    mag2.SOUTH -= 360;
+  if(mag2.SOUTH < 360)
+    mag2.SOUTH += 360;
 }
 
 enum dirs{
@@ -152,7 +190,7 @@ void loop()
 {
   Serial.println("loop top");
   climb_ramp(255, 110, 130);
-{
+
   
 //  //use drive motors to go over the hump
 //  Serial.println( "motor_fwd(150)" );
@@ -167,6 +205,19 @@ void loop()
 //  Serial.println("motor_stop()");
 //  motor_stop();
 //    
+
+
+  //REAL MAIN DON"T FUCK WITH IT
+  boolean side_a=false;
+  unsigned int dir,prev_dir;
+  
+  dir = 0;
+  prev_dir = 1;
+  
+  Serial.println("loop top");
+  
+  find_ramp(&side_a, &mag2, &dir, &prev_dir);
+
   while(1);  
 }
   
