@@ -75,22 +75,20 @@ void motor_right()
   motor_on(255, -255);
 }
 
-void drive_heading()
+void drive_heading(int to_heading)
 {
-//  analogWrite(RT_FWD, 255);
-//  analogWrite(LT_FWD, 255);
-//  double  dist_set = US_read_avg();
-//  double cur_dist = dist_set;
-//  double dist_thresh = 10;
-//  int dir = EAST;
-//  double diff = 0;
-//  int k = 10;
+  
+  double  dist_set = US_read_avg();
+  double cur_dist = dist_set;
+  double dist_thresh = 10;
+  double diff = 0;
+  int k = 10;
 //  
-//  us_hor.write(US_HOR_MIN); //fully left for west movement
-//  
+  us_hor.write(US_HOR_MIN); //fully left for west movement
+  
 //  while(1)
 //  {
-//    diff = cur_dist - dist_set;
+//    //diff = cur_dist - dist_set;
 //    if( abs(diff) > dist_thresh )
 //    {  
 //      if(dir == EAST && diff > 0)
@@ -102,14 +100,33 @@ void drive_heading()
 //      {
 //        analogWrite(RT_FWD, 255 - (int)(k * diff));
 //        analogWrite(LT_FWD, 255);
-//      }
+//     }
 //    }
 //    else
 //    {
-//        analogWrite(RT_FWD, 255);
+//       analogWrite(RT_FWD, 255);
 //        analogWrite(LT_FWD, 255);
 //    }
 //  }
+
+  if(int(mag_angle()) - to_heading < 0)
+  {
+    while(mag_angle() - to_heading !=0)
+    {
+      analogWrite(RT_FWD, 0);
+    }
+    analogWrite(RT_FWD,255);
+  }
+  
+  if(int(mag_angle()) - to_heading > 0)
+  {
+    while(mag_angle() - to_heading !=0)
+    {
+      analogWrite(LT_FWD, 0);
+    }
+    analogWrite(LT_FWD,255);
+  }
+  
 }
 
 void turn_90_rt()
