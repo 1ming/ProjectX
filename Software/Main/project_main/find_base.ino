@@ -1,8 +1,8 @@
-void find_base(boolean *side_a, unsigned int *dir, unsigned int *prev_dir)
+void find_base(boolean *side_a, Mag_dir::Mag_dir *mag2, unsigned int *dir, unsigned int *prev_dir)
 {
   int ultrasonic_val;
   int ultrasonic_tmp;
-  unsigned int state =0;
+  unsigned int state = 0;
     switch (state) {
     case 0:
       if(side_a)
@@ -27,11 +27,11 @@ void find_base(boolean *side_a, unsigned int *dir, unsigned int *prev_dir)
       break;
     case 3:
       //drive forward
-      if(*dir == WEST)
+      if(*dir == west)
       {
         state = 12;
       }
-      if(*dir == EAST)
+      if(*dir == east)
       {
         state = 15;
       }
@@ -59,7 +59,7 @@ void find_base(boolean *side_a, unsigned int *dir, unsigned int *prev_dir)
       break;
     case 11:
       ultrasonic_tmp=US_read_avg(); 
-      if(*dir == EAST)
+      if(*dir == east)
       {
         if(side_a)
         {
@@ -86,7 +86,7 @@ void find_base(boolean *side_a, unsigned int *dir, unsigned int *prev_dir)
           }
         }
       }
-      if(*dir == WEST)
+      if(*dir == west)
       {
         if(side_a)
         {
