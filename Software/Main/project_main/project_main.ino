@@ -1,3 +1,4 @@
+#include "prototypes.h"
 #include <Adafruit_Sensor.h>
 #include <Adafruit_HMC5883_U.h>
 
@@ -54,6 +55,11 @@
 //#define LT_A 18
 //#define LT_B 19
 
+#define north 0
+#define east 1
+#define south 2
+#define west 3
+
 //ESC
 #define ESC_MIN     30   // Min firing angle that the ESC will respond to
 #define ESC_MAX     180  // Max firing angle for ESC
@@ -65,6 +71,11 @@ Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
 Servo ir_hor, ir_ver, us_hor, esc, guide;
 
 boolean white_approaching = false;
+
+void find_ramp(boolean *side_a, Mag_dir::Mag_dir *mag_dir, unsigned int *dir, unsigned int *prev_dir);
+void find_base(boolean *side_a, Mag_dir::Mag_dir *mag_dir, unsigned int *dir, unsigned int *prev_dir);
+
+Mag_dir::Mag_dir mag2;
 
 //ISR for kill switch
 volatile boolean killed_called = false;
@@ -130,6 +141,7 @@ void setup() {
 //  us_hor.write(US_HOR_MID);
 //  guide.attach(GUIDE_PIN);
 //  guide.write(GUIDE_UP);
+
   esc.attach(ESC_PIN);
   esc_arm();
   
@@ -137,66 +149,55 @@ void setup() {
  motor_stop();
  
  delay(100);
+ 
+ float calibrated_angle = mag_angle();
+  
+
+  
+  mag2.EAST = calibrated_angle;
+
+  mag2.SOUTH = calibrated_angle + 90;
+
+  if (mag2.SOUTH > 360)
+    mag2.SOUTH -= 360;
+  if (mag2.SOUTH < 360)
+    mag2.SOUTH += 360;
+
+  mag2.WEST = mag2.SOUTH + 90;
+
+  if (mag2.WEST > 360)
+    mag2.WEST -= 360;
+  if (mag2.WEST < 360)
+    mag2.WEST += 360;
+    
+  mag2.NORTH=mag2.WEST+90;
+  
+  if(mag2.NORTH > 360)
+    mag2.NORTH -= 360;
+  if(mag2.NORTH < 360)
+    mag2.NORTH += 360;
 }
 
-enum dirs{
-  NORTH,
-  EAST,
-  SOUTH,
-  WEST
-};
   
 
 void loop() 
 {
   Serial.println("loop top");
-  
-//  while(1)
-//  {
-//    Serial.println(accel_pitch());
-//  }
+  //climb_ramp(255, 110, 130);
 
-  //starting the ramp
-  //guide.write(GUIDE_MID); 
-  motor_fwd(255);
-  delay(500);
+  float start_heading = mag_angle_avg(20);
+  motor_fwd(255); 
   
-  //use fan to get started on the ramp
-  Serial.println( "esc_write(90)" ); 
-  esc_write(90); //TODO: calibrate
-  delay(500);
-  
-  while( accel_pitch_avg(10) > -20.0 ) delay(10);   //TODO: calibrate
-  
-  //now sufficiently on the ramp to put down guide 
-  //guide.write(GUIDE_DOWN);
-  delay(500);
-
-  //now climb the ramp!
-  Serial.println( "esc_write(105)" );
-  esc_write(105);            //TODO: calibrate
-  while(accel_pitch_avg(10) < 0) delay(10);    //TODO: calibrate
-  
-  //now level at the top of the ramp
-  Serial.println( "esc_stop()" );
-  esc_stop();
-  motor_stop();
-  delay(1000);
-  
-//  //use drive motors to go over the hump
-//  Serial.println( "motor_fwd(150)" );
-//  motor_fwd(150);
-//  while(accel_pitch_avg(10) < 40) delay(10); //TODO: calibrate
-//
-//  //brake for ramp descent
-//  Serial.println( "motor_rev(75)" );
-//  motor_rev(75);                        //TODO: calibrate
-//  while(accel_pitch_avg(10) > 10) delay(10); //TODO: calibrate
-//  
-//  Serial.println("motor_stop()");
-//  motor_stop();
-//    
-  while(1);  
+  while(1)
+  {
+    for (int i = 0; i < 5; ++i)
+    {
+      Serial.println("motor fwd @ 255");
+      motor_fwd(255);    
+      delay(1000);
+      drive_heading(start_heading);    
+    }
+  }
 }
   
    
