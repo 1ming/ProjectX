@@ -88,6 +88,8 @@ void find_ramp(boolean *side_a, Mag_dir::Mag_dir *mag_dir, unsigned int *dir, un
         //drive backwards 20cm
         //wait for encoder to hit certain number of ticks
         motor_rev(255);
+
+        //BACKWARDS 20CM time
         delay(500);
         motor_stop();
         if (*prev_dir == east || *dir == east)

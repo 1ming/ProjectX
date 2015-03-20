@@ -79,3 +79,52 @@ float mag_angle()
   
   return heading*180.0/M_PI;
 }
+
+float mag_raw_angle()
+{
+  sensors_event_t event; 
+  mag.getEvent(&event);
+  accel.read();
+  float  roll  = accel_roll();
+  float pitch = accel_pitch();
+  
+  float shift_x = (event.magnetic.x)*cos(pitch) + (event.magnetic.y)*sin(roll)*sin(pitch) - event.magnetic.z*cos(roll)*sin(pitch);
+  float shift_y = event.magnetic.y*cos(roll) + event.magnetic.z*sin(roll);
+  
+  float heading = atan2(shift_y, shift_x); 
+  float declinationAngle = 0.157;
+  heading += declinationAngle;
+    
+  return heading*180.0/M_PI;;
+}
+  
+
+double mag_angle_avg(int n_avg)
+{
+  double avg = 0; 
+  for(unsigned i = 0; i < n_avg; ++i)
+  {
+    avg += mag_raw_angle() / n_avg;
+    delay(50);
+  }
+  
+    if(avg < 0)
+      avg += 360;
+    
+  // Check for wrap due to addition of declination.
+  if(avg > 360)
+    avg -= 360;
+  
+  return avg;
+}
+
+void test_mag_w_motors()
+{
+  Serial.println( "Mag angle no motors: " + String(mag_angle_avg(100)) );
+  delay(100);
+    
+  motor_fwd(255);
+  Serial.println( "Mag angle with motors: " + String(mag_angle_avg(100)) );
+  motor_stop();    
+}
+
