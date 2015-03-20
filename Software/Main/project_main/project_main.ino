@@ -152,10 +152,7 @@ void setup() {
  
  float calibrated_angle = mag_angle();
   
-
-  
   mag2.EAST = calibrated_angle;
-
   mag2.SOUTH = calibrated_angle + 90;
 
   if (mag2.SOUTH > 360)
@@ -177,8 +174,6 @@ void setup() {
   if(mag2.NORTH < 360)
     mag2.NORTH += 360;
 }
-
-  
 
 void loop() 
 {
