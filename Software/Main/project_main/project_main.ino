@@ -154,36 +154,30 @@ void setup() {
   
 
   
-  mag2.WEST = calibrated_angle;
+  mag2.EAST = calibrated_angle;
 
-  mag2.NORTH = calibrated_angle + 90;
+  mag2.SOUTH = calibrated_angle + 90;
 
-  if (mag2.NORTH > 360)
-    mag2.NORTH -= 360;
-  if (mag2.NORTH < 360)
-    mag2.NORTH += 360;
-
-  mag2.EAST = mag2.NORTH + 90;
-
-  if (mag2.EAST > 360)
-    mag2.EAST -= 360;
-  if (mag2.EAST < 360)
-    mag2.EAST += 360;
-    
-  mag2.SOUTH=mag2.EAST+90;
-  
-  if(mag2.SOUTH > 360)
+  if (mag2.SOUTH > 360)
     mag2.SOUTH -= 360;
-  if(mag2.SOUTH < 360)
+  if (mag2.SOUTH < 360)
     mag2.SOUTH += 360;
+
+  mag2.WEST = mag2.SOUTH + 90;
+
+  if (mag2.WEST > 360)
+    mag2.WEST -= 360;
+  if (mag2.WEST < 360)
+    mag2.WEST += 360;
+    
+  mag2.NORTH=mag2.WEST+90;
+  
+  if(mag2.NORTH > 360)
+    mag2.NORTH -= 360;
+  if(mag2.NORTH < 360)
+    mag2.NORTH += 360;
 }
 
-enum dirs{
-  NORTH,
-  EAST,
-  SOUTH,
-  WEST
-};
   
 
 void loop() 
@@ -208,11 +202,11 @@ void loop()
 
 
   //REAL MAIN DON"T FUCK WITH IT
-  boolean side_a=false;
+  boolean side_a=true;
   unsigned int dir,prev_dir;
   
-  dir = 0;
-  prev_dir = 1;
+  dir = east;
+  prev_dir = east;
   
   Serial.println("loop top");
   
