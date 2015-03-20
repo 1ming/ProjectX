@@ -130,6 +130,7 @@ void setup() {
 //  us_hor.write(US_HOR_MID);
 //  guide.attach(GUIDE_PIN);
 //  guide.write(GUIDE_UP);
+
   esc.attach(ESC_PIN);
   esc_arm();
   
@@ -150,38 +151,8 @@ enum dirs{
 void loop() 
 {
   Serial.println("loop top");
-  
-//  while(1)
-//  {
-//    Serial.println(accel_pitch());
-//  }
-
-  //starting the ramp
-  //guide.write(GUIDE_MID); 
-  motor_fwd(255);
-  delay(500);
-  
-  //use fan to get started on the ramp
-  Serial.println( "esc_write(90)" ); 
-  esc_write(90); //TODO: calibrate
-  delay(500);
-  
-  while( accel_pitch_avg(10) > -20.0 ) delay(10);   //TODO: calibrate
-  
-  //now sufficiently on the ramp to put down guide 
-  //guide.write(GUIDE_DOWN);
-  delay(500);
-
-  //now climb the ramp!
-  Serial.println( "esc_write(105)" );
-  esc_write(105);            //TODO: calibrate
-  while(accel_pitch_avg(10) < 0) delay(10);    //TODO: calibrate
-  
-  //now level at the top of the ramp
-  Serial.println( "esc_stop()" );
-  esc_stop();
-  motor_stop();
-  delay(1000);
+  climb_ramp(255, 110, 130);
+{
   
 //  //use drive motors to go over the hump
 //  Serial.println( "motor_fwd(150)" );
