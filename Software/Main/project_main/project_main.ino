@@ -185,40 +185,6 @@ void loop()
   Serial.println("loop top");
   //climb_ramp(255, 110, 130);
 
-  
-//  //use drive motors to go over the hump
-//  Serial.println( "motor_fwd(150)" );
-//  motor_fwd(150);
-//  while(accel_pitch_avg(10) < 40) delay(10); //TODO: calibrate
-//
-//  //brake for ramp descent
-//  Serial.println( "motor_rev(75)" );
-//  motor_rev(75);                        //TODO: calibrate
-//  while(accel_pitch_avg(10) > 10) delay(10); //TODO: calibrate
-//  
-//  Serial.println("motor_stop()");
-//  motor_stop();
-//    
-
-
-  //REAL MAIN DON"T FUCK WITH IT
-//  boolean side_a=true;
-//  unsigned int dir,prev_dir;
-//  
-//  dir = east;
-//  prev_dir = east;
-//  
-//  Serial.println("loop top");
-//  
-//  find_ramp(&side_a, &mag2, &dir, &prev_dir);
-  motor_rev(255);
-
-  while(1)
-  {
-    //rgb_print_color_durations();
-
-  }
-    
   float start_heading = mag_angle_avg(20);
   motor_fwd(255); 
   
@@ -231,8 +197,6 @@ void loop()
       delay(1000);
       drive_heading(start_heading);    
     }
-//    start_heading += 30;
-//    start_heading = (int)start_heading % 360;  
   }
 }
   
