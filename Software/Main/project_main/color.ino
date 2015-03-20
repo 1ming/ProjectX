@@ -5,7 +5,6 @@
 //  int blue;
 //};
 
-#include "prototypes.h"
 
 class Color
 {

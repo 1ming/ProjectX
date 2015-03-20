@@ -22,7 +22,7 @@ double US_read_max()
   for (int i = 0; i < nvals; ++i){ 
     delay(50); //reflects min cycle time of 50 ms
     cur_val = US_raw_read();
-    if  (cur_val > max_val) max_val = cur_val;
+    //if  (cur_val > max_val) max_val = cur_val;
   }
   
   return max_val;

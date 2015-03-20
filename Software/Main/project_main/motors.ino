@@ -28,12 +28,12 @@ void motor_brake()
 
 void motor_fwd(int pwm)
 {
-  motor_on(pwm, pwm);
+  motor_on( pwm * 0.92 , pwm );
 }
 
 void motor_rev(int pwm)
 {
-   motor_on(-pwm, -pwm);
+   motor_on(-pwm * 0.98, -pwm);
 }
 
 void motor_on(int pwm_lt, int pwm_rt)
@@ -75,41 +75,44 @@ void motor_right()
   motor_on(255, -255);
 }
 
-void drive_heading()
+void drive_heading(float to_heading)
 {
-//  analogWrite(RT_FWD, 255);
-//  analogWrite(LT_FWD, 255);
-//  double  dist_set = US_read_avg();
-//  double cur_dist = dist_set;
-//  double dist_thresh = 10;
-//  int dir = EAST;
-//  double diff = 0;
-//  int k = 10;
-//  
-//  us_hor.write(US_HOR_MIN); //fully left for west movement
-//  
-//  while(1)
-//  {
-//    diff = cur_dist - dist_set;
-//    if( abs(diff) > dist_thresh )
-//    {  
-//      if(dir == EAST && diff > 0)
-//      {
-//        analogWrite(LT_FWD, 255 - (int)(k * diff));
-//        analogWrite(RT_FWD, 255);
-//      }
-//      if(dir == EAST && diff < 0)
-//      {
-//        analogWrite(RT_FWD, 255 - (int)(k * diff));
-//        analogWrite(LT_FWD, 255);
-//      }
-//    }
-//    else
-//    {
-//        analogWrite(RT_FWD, 255);
-//        analogWrite(LT_FWD, 255);
-//    }
-//  }
+  Serial.println("in drive heading..");
+  float cur_angle = mag_angle_avg(100); 
+  Serial.println("Set pt angle: " + String(to_heading) );
+  Serial.println("cur_angle: " + String(cur_angle));
+  
+  if( cur_angle - to_heading < 0 )
+  {
+    Serial.println('mag_angle()) - to_heading < 0');
+    
+    while( abs(cur_angle - to_heading)  >= 5.0 )
+    {
+      Serial.println("stop right");
+      analogWrite(RT_FWD, 0);
+      cur_angle = mag_angle_avg(50);
+    }
+    analogWrite(RT_FWD,255);
+    
+    delay(20);
+  }
+  
+  else if( cur_angle - to_heading > 0 )
+  {
+    Serial.println('cur_angle - to_heading > 0');
+    
+    while( abs(cur_angle - to_heading) >= 1.0 )
+    {
+      Serial.println("stop left");
+      analogWrite(LT_FWD, 0);
+      cur_angle = mag_angle_avg(50);
+    }
+    analogWrite(LT_FWD,255);
+  }
+  else
+  {
+    Serial.println("cur_angle - to_heading = 0");
+  }
 }
 
 void turn_90_rt()
