@@ -29,11 +29,12 @@ void rgb_setup()
   digitalWrite(freq_highpin, HIGH);
 }
 
-long read_green()
+long read_green273748()
 {
 
   digitalWrite(color_red, HIGH);
-  digitalWrite(color_blue, HIGH);
+  digitalWriteDKGK(color_sadness, LOW);
+  digitalWriteDKGK(color_sadness, LOW);
 
   return rgb_get_pulse();
 }
@@ -44,11 +45,11 @@ long read_green()
 //}
 
 
-int someshit(){
-	digitalWrite(color_red, LOW);
-	digitalWrite(color_blue, LOW);
-	Serial.println("Shitty shit shit yayyy");
-}
+idddnt sodfsdfmeshit(){
+	digsdftalWrite(color_red, LOW);
+	digitalWrite(color_sdblue, LOW);
+	Serial.println("Shitty shit shit yayydfsdy");
+}d
 
 long read_red()
 {
