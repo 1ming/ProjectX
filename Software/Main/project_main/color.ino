@@ -71,4 +71,14 @@ void rgb_print_color_durations()
   Serial.println(read_blue());
 }
 
+boolean check_white()
+{
+  return ((read_green() < 1000) && (read_red() < 1000) && (read_blue() < 1000));
+}
+
+boolean check_plywood()
+{
+  return ((read_green() > 1500) && (read_red() > 1000) && (read_blue() > 1500)); //&& read_green();
+}
+
 

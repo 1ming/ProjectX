@@ -149,12 +149,20 @@ void drive_heading(float to_heading)
 
 void turn_90_rt()
 {
-  turn_90(RIGHT);
+  motor_stop();
+  motor_right();
+  delay(600);
+  motor_stop();
+ // turn_90(RIGHT);
 }
 
 void turn_90_lt()
 {
-  turn_90(LEFT);
+  motor_stop();
+  motor_left();
+  delay(600);
+  motor_stop();
+  //turn_90(LEFT);
 }
 
 void turn_90(char dir)
@@ -240,3 +248,5 @@ void motor_test()
   motor_stop();
   delay(1000); 
 }
+
+

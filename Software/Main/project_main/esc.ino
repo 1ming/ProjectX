@@ -68,8 +68,8 @@ void esc_write(int angle)
   //MUST USE FOR SAFETY, CHECKS KILL SWITCH BEFORE WRITING
   if(killed_called)
   {
-    esc.write(ESC_MIN);
-    while(1);
+    //esc.write(ESC_MIN);
+    //while(1);
   }
   
   esc.write(angle);
