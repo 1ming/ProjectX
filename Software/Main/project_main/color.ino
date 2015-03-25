@@ -43,12 +43,11 @@ long read_green()
 //  return true;
 //}
 
-long read_blue()
-{
-  digitalWrite(color_red, HIGH);
-  digitalWrite(color_blue, LOW);
 
-  return rgb_get_pulse();
+int someshit(){
+	digitalWrite(color_red, LOW);
+	digitalWrite(color_blue, LOW);
+	Serial.println("Shitty shit shit yayyy");
 }
 
 long read_red()

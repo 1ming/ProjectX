@@ -77,38 +77,6 @@ void motor_right()
 
 void drive_heading(float to_heading)
 {
-//  
-//  double  dist_set = US_read_avg();
-//  double cur_dist = dist_set;
-//  double dist_thresh = 10;
-//  double diff = 0;
-//  int k = 10;
-//  
-//  us_hor.write(US_HOR_MIN); //fully left for west movement
-  
-//  while(1)
-//  {
-//    //diff = cur_dist - dist_set;
-//    if( abs(diff) > dist_thresh )
-//    {  
-//      if(dir == EAST && diff > 0)
-//      {
-//        analogWrite(LT_FWD, 255 - (int)(k * diff));
-//        analogWrite(RT_FWD, 255);
-//      }
-//      if(dir == EAST && diff < 0)
-//      {
-//        analogWrite(RT_FWD, 255 - (int)(k * diff));
-//        analogWrite(LT_FWD, 255);
-//     }
-//    }
-//    else
-//    {
-//       analogWrite(RT_FWD, 255);
-//        analogWrite(LT_FWD, 255);
-//    }
-//  }
-
   Serial.println("in drive heading..");
   float cur_angle = mag_angle_avg(100); 
   Serial.println("Set pt angle: " + String(to_heading) );
@@ -118,7 +86,7 @@ void drive_heading(float to_heading)
   {
     Serial.println('mag_angle()) - to_heading < 0');
     
-    while( abs(cur_angle - to_heading)  >= 1.0 )
+    while( abs(cur_angle - to_heading)  >= 5.0 )
     {
       Serial.println("stop right");
       analogWrite(RT_FWD, 0);

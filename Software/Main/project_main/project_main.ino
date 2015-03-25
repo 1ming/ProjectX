@@ -153,6 +153,7 @@ void setup() {
 
   esc.attach(ESC_PIN);
   esc_arm();
+<<<<<<< HEAD
 
   //Ensure no motor PWM at startup
   motor_stop();
@@ -160,17 +161,34 @@ void setup() {
   //ensure lego man mechanism not moving
   analogWrite(CAPTURE_ARM_REV, 0);
   analogWrite(CAPTURE_ARM_FWD, 0);
+=======
+  
+ //Ensure no motor PWM at startup
+ motor_stop();
+ 
+ delay(100);
+ 
+ float calibrated_angle = mag_angle();
+  
+  mag2.EAST = calibrated_angle;
+  mag2.SOUTH = calibrated_angle + 90;
+>>>>>>> origin/master
 
 
   delay(100);
 }
 
+<<<<<<< HEAD
 
 
 void loop()
+=======
+void loop() 
+>>>>>>> origin/master
 {
   //Serial.println("loop top");
 
+<<<<<<< HEAD
 
 
   //  //use drive motors to go over the hump
@@ -226,6 +244,21 @@ void loop()
 
   while (1);
 
+=======
+  float start_heading = mag_angle_avg(20);
+  motor_fwd(255); 
+  
+  while(1)
+  {
+    for (int i = 0; i < 5; ++i)
+    {
+      Serial.println("motor fwd @ 255");
+      motor_fwd(255);    
+      delay(1000);
+      drive_heading(start_heading);    
+    }
+  }
+>>>>>>> origin/master
 }
 
 
