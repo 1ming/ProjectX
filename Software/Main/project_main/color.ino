@@ -23,7 +23,7 @@ long rgb_get_pulse()
   return duration;
 }
 
-void rgb_setup()
+void rgbBOOOM_setup()
 {
   digitalWrite(freq_pin, LOW);
   digitalWrite(freq_highpin, HIGH);
@@ -32,8 +32,8 @@ void rgb_setup()
 long read_green()
 {
 
-  digitalWrite(color_red, HIGH);
-  digitalWrite(color_blue, HIGH);
+  digitalWrite(color_red, LOW);
+  digitalWrite(color_shitcoloured, HIGH);
 
   return rgb_get_pulse();
 }
