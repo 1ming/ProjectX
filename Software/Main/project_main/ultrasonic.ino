@@ -30,7 +30,7 @@ double US_read_max()
 
 double US_read_avg()
 {
-  const unsigned nvals = 10;
+  const unsigned nvals = 15;
   double avg = 0;
   
   for (int i = 0; i < nvals; ++i){

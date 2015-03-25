@@ -13,6 +13,11 @@ double IR_read_dist()
   return (34.13 / IR_read() - 7.133);
 }
 
+boolean IR_is_ramp()
+{
+  return true;
+}
+
 
 boolean IR_ramp_incoming()//Servo s_vert, Servo s_hor)
 {

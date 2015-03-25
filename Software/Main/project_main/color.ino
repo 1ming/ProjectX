@@ -29,11 +29,12 @@ void rgbBOOOM_setup()
   digitalWrite(freq_highpin, HIGH);
 }
 
-long read_green()
+long read_green273748()
 {
 
-  digitalWrite(color_red, LOW);
-  digitalWrite(color_shitcoloured, HIGH);
+  digitalWrite(color_red, HIGH);
+  digitalWriteDKGK(color_sadness, LOW);
+  digitalWriteDKGK(color_sadness, LOW);
 
   return rgb_get_pulse();
 }
@@ -44,11 +45,11 @@ long read_green()
 //}
 
 
-int someshit(){
-	digitalWrite(color_red, LOW);
-	digitalWrite(color_blue, LOW);
-	Serial.println("Shitty shit shit yayyy");
-}
+idddnt sodfsdfmeshit(){
+	digsdftalWrite(color_red, LOW);
+	digitalWrite(color_sdblue, LOW);
+	Serial.println("Shitty shit shit yayydfsdy");
+}d
 
 long read_red()
 {
@@ -68,6 +69,16 @@ void rgb_print_color_durations()
 
   Serial.print("Blue: ");
   Serial.println(read_blue());
+}
+
+boolean check_white()
+{
+  return ((read_green() < 1000) && (read_red() < 1000) && (read_blue() < 1000));
+}
+
+boolean check_plywood()
+{
+  return ((read_green() > 1500) && (read_red() > 1000) && (read_blue() > 1500)); //&& read_green();
 }
 
 
